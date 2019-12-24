@@ -4,9 +4,17 @@
       <v-col>
         <v-form id="createform">
           <div ref="colq">
+            <v-row class="d-flex align-center">
+              <v-text-field
+                class="ma-4"
+                label="Título do questionário"
+                v-model="quiz.name"
+              >
+              </v-text-field>
+            </v-row>
             <v-row
               class="d-flex align-center"
-              v-for="(question, index) in questions"
+              v-for="(question, index) in quiz.questions"
               :key="index"
             >
               <v-textarea
@@ -34,7 +42,7 @@
               >
               <span class="d-inline d-md-none">+ Questão</span></v-btn
             >
-            <v-btn class="success">Salvar</v-btn>
+            <v-btn class="success" @click.prevent="submitQuiz">Salvar</v-btn>
           </v-row>
         </v-form>
       </v-col>
@@ -46,21 +54,17 @@
 export default {
   data() {
     return {
-      items: [
-        "Múltipla escolha",
-        "Slider",
-        "Dissertativa",
-        "Verdadeiro ou Falso"
-      ],
-      questions: [{ body: "" }],
-      picker: new Date().toISOString().substr(0, 10)
+      quiz: {
+        name: "",
+        questions: [{ body: "" }]
+      }
     };
   },
 
   methods: {
     addQuestion(event) {
       event.preventDefault();
-      this.questions.push({ body: "" });
+      this.quiz.questions.push({ body: "" });
       this.$nextTick(() => {
         window.scrollBy({
           top: 999,
@@ -70,28 +74,41 @@ export default {
     },
 
     deleteQuestion(question) {
-      if (this.questions.length < 2) return;
-      const index = this.questions.indexOf(question);
-      this.questions.splice(index, 1);
+      if (this.quiz.questions.length < 2) return;
+      const index = this.quiz.questions.indexOf(question);
+      this.quiz.questions.splice(index, 1);
     },
 
     deleteEmptyQuestion(question) {
       if (question.body != "") return;
-      if (this.questions.length < 2) return;
+      if (this.quiz.questions.length < 2) return;
 
-      const index = this.questions.indexOf(question);
-      this.questions.splice(index, 1);
+      const index = this.quiz.questions.indexOf(question);
+      this.quiz.questions.splice(index, 1);
       this.focusLastQuestion();
     },
 
     focusLastQuestion() {
       this.$nextTick(() => {
-        if (this.questions.length < 1) return;
+        if (this.quiz.questions.length < 1) return;
         const target = this.$refs.colq.lastElementChild.getElementsByTagName(
           "textarea"
         )[0];
         target.focus();
       });
+    },
+
+    submitQuiz() {
+      this.$http
+        .post("quizzes", this.quiz)
+        .then(response => {
+          console.log("then");
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log("catch");
+          console.log(error.response.data);
+        });
     }
   }
 };
