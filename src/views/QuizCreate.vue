@@ -6,6 +6,7 @@
           <div ref="colq">
             <v-row class="d-flex align-center">
               <v-text-field
+                maxlength="255"
                 class="ma-4"
                 label="Título do questionário"
                 v-model="quiz.name"
@@ -23,6 +24,8 @@
                 autofocus
                 class="ma-4"
                 rows="3"
+                maxlength="255"
+                counter="255"
                 max-width="100%"
                 :label="'Questão #' + (index + 1)"
                 v-model="question.body"
@@ -102,8 +105,10 @@ export default {
       this.$http
         .post("quizzes", this.quiz)
         .then(response => {
-          console.log("then");
-          console.log(response.data);
+          this.$store.commit("setSnackbar", {
+            text: `Questionário #${response.data.quiz.id} criado com sucesso`,
+            color: "success"
+          });
         })
         .catch(error => {
           console.log("catch");

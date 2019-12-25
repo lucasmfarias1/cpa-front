@@ -40,6 +40,14 @@
     <v-footer color="indigo" class="d-none d-sm-flex" app>
       <span class="white--text">Desenvolvido pela equipe web da Fatec-RL</span>
     </v-footer>
+
+    <v-snackbar
+      bottom
+      v-model="$store.state.snackbar"
+      :color="$store.state.snackbarColor"
+      :timeout="6000"
+      >{{ $store.state.snackbarText }}</v-snackbar
+    >
   </v-app>
 </template>
 

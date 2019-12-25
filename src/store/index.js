@@ -4,8 +4,18 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    snackbarText: "",
+    snackbarColor: "success",
+    snackbar: false
+  },
+  mutations: {
+    setSnackbar (state, payload) {
+      state.snackbarText = payload.text;
+      state.snackbarColor = payload.color;
+      state.snackbar = true;
+    }
+  },
   actions: {},
   modules: {}
 });
