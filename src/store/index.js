@@ -10,7 +10,7 @@ export default new Vuex.Store({
     snackbar: false
   },
   mutations: {
-    setSnackbar (state, payload) {
+    setSnackbar(state, payload) {
       state.snackbarText = payload.text;
       state.snackbarColor = payload.color;
       state.snackbar = true;

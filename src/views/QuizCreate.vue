@@ -111,8 +111,10 @@ export default {
           });
         })
         .catch(error => {
-          console.log("catch");
-          console.log(error.response.data);
+          this.$store.commit("setSnackbar", {
+            text: `${error.response.data.message}`,
+            color: "error"
+          });
         });
     }
   }

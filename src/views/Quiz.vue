@@ -2,9 +2,14 @@
   <v-data-table
     :headers="headers"
     :items="quizzes"
-    sort-by="date"
+    :options.sync="options"
+    :server-items-length="totalQuizzes"
     :loading="loading"
     class="elevation-1"
+    sort-by="name"
+      :footer-props="{
+        itemsPerPageOptions: [10, 20, 50]
+      }"
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
@@ -27,6 +32,9 @@ export default {
   data() {
     return {
       loading: true,
+      totalQuizzes: 0,
+      quizzes: [],
+      options: {},
       headers: [
         {
           text: "Nome",
@@ -36,17 +44,21 @@ export default {
         { text: "Número de questões", value: "date" },
         { text: "Data de criação", value: "date" },
         { text: "", value: "action", sortable: false }
-      ],
-
-      quizzes: []
+      ]
     };
   },
 
+  watch: {
+    options: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: true
+    }
+  },
+
   mounted() {
-    this.$http.get("quizzes").then(response => {
-      this.quizzes = response.data.quizzes;
-      this.loading = false;
-    });
+    this.getDataFromApi();
   },
 
   methods: {
@@ -63,6 +75,19 @@ export default {
             console.log(error);
           });
       }
+    },
+    // this.$http.get("quizzes").then(response => {
+    //   this.quizzes = response.data.quizzes;
+    //   this.loading = false;
+    // });
+
+    getDataFromApi() {
+      this.loading = true;
+      this.$http.get("quizzes", { params: this.options }).then(response => {
+        this.totalQuizzes = response.data.quizzes.total;
+        this.quizzes = response.data.quizzes.data;
+        this.loading = false;
+      });
     }
   }
 };
