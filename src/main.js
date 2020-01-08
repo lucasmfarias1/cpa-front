@@ -12,6 +12,12 @@ const base = axios.create({
 });
 Vue.prototype.$http = base;
 
+Array.prototype.unique = function() {
+  return this.filter(function (value, index, self) { 
+    return self.indexOf(value) === index;
+  });
+}
+
 new Vue({
   router,
   store,

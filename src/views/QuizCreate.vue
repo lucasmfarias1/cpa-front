@@ -1,12 +1,12 @@
 <template>
-  <v-container id="createq">
+  <v-container m-0 id="createq">
     <v-row>
       <v-col>
         <v-form id="createform">
           <div ref="colq">
             <v-row class="d-flex align-center">
               <v-text-field
-                maxlength="255"
+                maxlength="191"
                 class="ma-4"
                 label="Título do questionário"
                 v-model="quiz.name"
@@ -24,8 +24,8 @@
                 autofocus
                 class="ma-4"
                 rows="3"
-                maxlength="255"
-                counter="255"
+                maxlength="191"
+                counter="191"
                 max-width="100%"
                 :label="'Questão #' + (index + 1)"
                 v-model="question.body"
@@ -111,8 +111,15 @@ export default {
           });
         })
         .catch(error => {
+          const errorResponse = error.response.data.errors;
+          let errorArray = [];
+          for (var errorInstance in errorResponse) {
+            errorArray.push(errorResponse[errorInstance][0]);
+          }
+          errorArray = errorArray.unique().join(' ');
+
           this.$store.commit("setSnackbar", {
-            text: `${error.response.data.message}`,
+            text: `${errorArray}`,
             color: "error"
           });
         });

@@ -41,8 +41,8 @@ export default {
           align: "left",
           value: "name"
         },
-        { text: "Número de questões", value: "date" },
-        { text: "Data de criação", value: "date" },
+        { text: "Número de questões", value: "created_at" },
+        { text: "Data de criação", value: "created_at" },
         { text: "", value: "action", sortable: false }
       ]
     };
