@@ -4,11 +4,12 @@
       <v-col align="center">
         <h1 class="title">Atualmente não há nenhum questionário ativo.</h1>
       </v-col>
-      <v-col>
-        <v-subheader
-          >Você que é aluno pode fazer login com o seu número de RA e
-          CPF.</v-subheader
-        >
+      <v-col align="center">
+        <h2 class="subtitle-1">
+          Para responder ao questionário ativo, basta fazer login com o seu
+          número de RA e CPF.
+        </h2>
+        <v-subheader></v-subheader>
         <v-card width="100%" max-width="450px">
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>Login</v-toolbar-title>

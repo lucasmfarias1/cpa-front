@@ -3,7 +3,7 @@
     <v-row align="center" justify="center">
       <v-card width="100%" max-width="450px">
         <v-toolbar color="primary" dark flat>
-          <v-toolbar-title>Login</v-toolbar-title>
+          <v-toolbar-title>Área do admin - Login</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-text-field

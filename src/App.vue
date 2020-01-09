@@ -15,7 +15,7 @@
             <v-icon>mdi-contact-mail</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Quiz</v-list-item-title>
+            <v-list-item-title>Questionários</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link to="/login">
@@ -23,7 +23,7 @@
             <v-icon>mdi-contact-mail</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Login</v-list-item-title>
+            <v-list-item-title>Área do admin</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

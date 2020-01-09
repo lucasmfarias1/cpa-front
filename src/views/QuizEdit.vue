@@ -1,9 +1,9 @@
 <template>
   <v-container m-0 id="createq">
     <v-row justify="center" class="ma-5">
-      <h2 class="title">
-        Novo Questionário
-      </h2>
+        <h2 class="title">
+          Editando Questionário "{{ quiz.name }}"
+        </h2>
     </v-row>
     <v-row>
       <v-col>
@@ -11,7 +11,6 @@
           <div ref="colq">
             <v-row class="d-flex align-center">
               <v-text-field
-                :disabled="loading"
                 maxlength="191"
                 class="ma-4"
                 label="Título do questionário"
@@ -25,7 +24,6 @@
               :key="index"
             >
               <v-textarea
-                :disabled="loading"
                 @keyup.delete="deleteEmptyQuestion(question)"
                 @keydown.enter="addQuestion($event)"
                 autofocus
@@ -39,30 +37,20 @@
                 :key="index"
               >
               </v-textarea>
-              <v-btn v-if="quiz.questions.length > 1" class="mr-4" icon @click="deleteQuestion(question)">
+              <v-btn class="mr-4" icon @click="deleteQuestion(question)">
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-row>
           </div>
           <v-row class="d-flex justify-center">
             <v-btn class="secondary" to="/quiz">Voltar</v-btn>
-            <v-btn
-              class="mx-0 mx-sm-1 mx-md-5 primary"
-              :disabled="loading"
-              @click="addQuestion"
+            <v-btn class="mx-0 mx-sm-1 mx-md-5 primary" @click="addQuestion"
+              ><span class="d-none d-sm-none d-md-inline"
+                >Adicionar Questão</span
+              >
+              <span class="d-inline d-md-none">+ Questão</span></v-btn
             >
-              <span class="d-none d-sm-none d-md-inline">
-                Adicionar Questão
-              </span>
-              <span class="d-inline d-md-none">+ Questão</span>
-            </v-btn>
-            <v-btn
-              :disabled="loading"
-              class="success"
-              @click.prevent="submitQuiz"
-            >
-              Salvar
-            </v-btn>
+            <v-btn class="success" @click.prevent="submitQuiz">Salvar</v-btn>
           </v-row>
         </v-form>
       </v-col>
@@ -74,7 +62,6 @@
 export default {
   data() {
     return {
-      loading: false,
       quiz: {
         name: "",
         questions: [{ body: "" }]
@@ -120,7 +107,6 @@ export default {
     },
 
     submitQuiz() {
-      this.loading = true;
       this.$http
         .post("quizzes", this.quiz)
         .then(response => {
@@ -128,7 +114,6 @@ export default {
             text: `Questionário #${response.data.quiz.id} criado com sucesso`,
             color: "success"
           });
-          this.loading = false;
         })
         .catch(error => {
           const errorResponse = error.response.data.errors;
@@ -136,13 +121,12 @@ export default {
           for (var errorInstance in errorResponse) {
             errorArray.push(errorResponse[errorInstance][0]);
           }
-          errorArray = errorArray.unique().join(" ");
+          errorArray = errorArray.unique().join(' ');
 
           this.$store.commit("setSnackbar", {
             text: `${errorArray}`,
             color: "error"
           });
-          this.loading = false;
         });
     }
   }
