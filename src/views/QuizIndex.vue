@@ -87,11 +87,6 @@ export default {
       }
     },
 
-    // this.$http.get("quizzes").then(response => {
-    //   this.quizzes = response.data.quizzes;
-    //   this.loading = false;
-    // });
-
     getDataFromApi() {
       this.loading = true;
       this.$http.get("quizzes", { params: this.options }).then(response => {

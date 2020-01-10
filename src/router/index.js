@@ -5,7 +5,6 @@ import Login from "../views/Login.vue";
 import Questionario from "../views/Questionario.vue";
 import QuizIndex from "../views/QuizIndex.vue";
 import QuizCreate from "../views/QuizCreate.vue";
-import QuizEdit from "../views/QuizEdit.vue";
 
 Vue.use(VueRouter);
 
@@ -33,7 +32,7 @@ const routes = [
   {
     path: "/quiz/edit/:id",
     name: "quiz-edit",
-    component: QuizEdit
+    component: QuizCreate
   },
   {
     path: "/login",

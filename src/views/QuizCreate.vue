@@ -39,7 +39,12 @@
                 :key="index"
               >
               </v-textarea>
-              <v-btn v-if="quiz.questions.length > 1" class="mr-4" icon @click="deleteQuestion(question)">
+              <v-btn
+                v-if="quiz.questions.length > 1"
+                class="mr-4"
+                icon
+                @click="deleteQuestion(question)"
+              >
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-row>
@@ -82,6 +87,12 @@ export default {
     };
   },
 
+  mounted() {
+    if (this.$route.params.id) {
+      this.getQuizFromApi();
+    }
+  },
+
   methods: {
     addQuestion(event) {
       event.preventDefault();
@@ -120,12 +131,49 @@ export default {
     },
 
     submitQuiz() {
+      if (this.quiz.id) {
+        this.updateQuiz();
+      } else {
+        this.storeQuiz();
+      }
+    },
+
+    storeQuiz() {
       this.loading = true;
       this.$http
         .post("quizzes", this.quiz)
         .then(response => {
+          this.quiz.id = response.data.quiz.id;
           this.$store.commit("setSnackbar", {
             text: `Questionário #${response.data.quiz.id} criado com sucesso`,
+            color: "success"
+          });
+          this.$router.replace({ path: `/quiz/edit/${response.data.quiz.id}` });
+          this.loading = false;
+        })
+        .catch(error => {
+          const errorResponse = error.response.data.errors;
+          let errorArray = [];
+          for (var errorInstance in errorResponse) {
+            errorArray.push(errorResponse[errorInstance][0]);
+          }
+          errorArray = errorArray.unique().join(" ");
+
+          this.$store.commit("setSnackbar", {
+            text: `${errorArray}`,
+            color: "error"
+          });
+          this.loading = false;
+        });
+    },
+
+    updateQuiz() {
+      this.loading = true;
+      this.$http
+        .patch(`quizzes/${this.quiz.id}`, this.quiz)
+        .then(response => {
+          this.$store.commit("setSnackbar", {
+            text: `Questionário #${response.data.quiz.id} atualizado com sucesso`,
             color: "success"
           });
           this.loading = false;
@@ -143,6 +191,19 @@ export default {
             color: "error"
           });
           this.loading = false;
+        });
+    },
+
+    getQuizFromApi() {
+      this.loading = true;
+      this.$http
+        .get(`quizzes/${this.$route.params.id}`)
+        .then(response => {
+          this.quiz = response.data.quiz;
+          this.loading = false;
+        })
+        .catch(error => {
+          console.log(error.response.data);
         });
     }
   }
