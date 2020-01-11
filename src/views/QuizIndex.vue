@@ -19,8 +19,13 @@
         <v-btn color="primary" dark class="mb-2" to="/quiz/create">Novo</v-btn>
       </v-toolbar>
     </template>
+
+    <template v-slot:item.created_at="{ item }">
+      <span>{{ moment(item.created_at).calendar() }}</span>
+    </template>
+
     <template v-slot:item.action="{ item }">
-      <v-btn class="mx-1" icon @click="deleteQuiz(item)  ">
+      <v-btn class="mx-1" icon @click="deleteQuiz(item)">
         <v-icon>
           delete
         </v-icon>
