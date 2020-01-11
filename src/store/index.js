@@ -26,10 +26,10 @@ export default new Vuex.Store({
       state.status = "loading";
     },
 
-    auth_success(state, token, user) {
+    auth_success(state, payload) {
       state.status = "success";
-      state.token = token;
-      state.user = user;
+      state.token = payload.token;
+      state.user = payload.user;
     },
 
     auth_error(state) {
@@ -42,12 +42,17 @@ export default new Vuex.Store({
     }
   },
 
+  getters : {
+    isLoggedIn: state => !!state.token,
+    authStatus: state => state.status,
+  },
+
   actions: {
     login({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit("auth_request");
         axios({
-          url: "http://localhost:3000/login",
+          url: "http://cpa.test/api/auth/login",
           data: user,
           method: "POST"
         })
@@ -56,7 +61,10 @@ export default new Vuex.Store({
             const user = resp.data.user;
             localStorage.setItem("token", token);
             axios.defaults.headers.common["Authorization"] = token;
-            commit("auth_success", token, user);
+            commit("auth_success", {
+              token: token,
+              user: user
+            });
             resolve(resp);
           })
           .catch(err => {
@@ -68,7 +76,7 @@ export default new Vuex.Store({
     },
 
     logout({ commit }) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         commit("logout");
         localStorage.removeItem("token");
         delete axios.defaults.headers.common["Authorization"];

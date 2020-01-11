@@ -10,6 +10,7 @@
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
         <v-list-item link to="/quiz">
           <v-list-item-action>
             <v-icon>mdi-contact-mail</v-icon>
@@ -18,12 +19,22 @@
             <v-list-item-title>Questionários</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
         <v-list-item link to="/login">
           <v-list-item-action>
             <v-icon>mdi-contact-mail</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Área do admin</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item v-if="$store.getters.isLoggedIn" @click.prevent="logout">
+          <v-list-item-action>
+            <v-icon>mdi-contact-mail</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -53,11 +64,31 @@
 
 <script>
 export default {
+  created: function() {
+    this.$http.interceptors.response.use(undefined, function(err) {
+      return new Promise(function() {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.$store.dispatch("logout");
+        }
+        throw err;
+      });
+    });
+  },
+
   props: {
     source: String
   },
+
   data: () => ({
     drawer: null
-  })
+  }),
+
+  methods: {
+    logout: function() {
+      this.$store.dispatch("logout").then(() => {
+        if (this.$route.path !== "/") this.$router.push("/");
+      });
+    }
+  }
 };
 </script>

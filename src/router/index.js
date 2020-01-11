@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "../store/index.js";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Questionario from "../views/Questionario.vue";
@@ -22,7 +23,10 @@ const routes = [
   {
     path: "/quiz",
     name: "quiz",
-    component: QuizIndex
+    component: QuizIndex,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/quiz/create",
@@ -43,6 +47,18 @@ const routes = [
 
 const router = new VueRouter({
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+      return;
+    }
+    next("/");
+  } else {
+    next();
+  }
 });
 
 export default router;

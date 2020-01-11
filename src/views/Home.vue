@@ -11,30 +11,33 @@
         </h2>
         <v-subheader></v-subheader>
         <v-card width="100%" max-width="450px">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Login</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-text-field
-              :rules="[rules.required]"
-              label="RA"
-              class="input-group--focused"
-              prepend-icon="person"
-            ></v-text-field>
+          <v-form @submit.prevent="login">
+            <v-toolbar color="primary" dark flat>
+              <v-toolbar-title>Login</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-text-field
+                :rules="[rules.required]"
+                label="RA"
+                class="input-group--focused"
+                prepend-icon="person"
+                v-model="ra"
+              ></v-text-field>
 
-            <v-text-field
-              value=""
-              :rules="[rules.required]"
-              label="CPF"
-              class="input-group--focused"
-              prepend-icon="lock"
-            ></v-text-field>
-          </v-card-text>
+              <v-text-field
+                :rules="[rules.required]"
+                label="CPF"
+                class="input-group--focused"
+                prepend-icon="lock"
+                v-model="cpf"
+              ></v-text-field>
+            </v-card-text>
 
-          <v-card-actions>
-            <v-spacer />
-            <v-btn color="primary" to="/questionario">Login</v-btn>
-          </v-card-actions>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" type="submit">Login</v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
       </v-col>
     </v-row>
@@ -45,6 +48,8 @@
 export default {
   data() {
     return {
+      ra: "123",
+      cpf: "425",
       rules: {
         required: value => !!value || "Campo obrigatório",
         min: v => v.length >= 6 || "Mínimo 6 caracteres",
@@ -54,7 +59,14 @@ export default {
   },
 
   methods: {
-    //
+    login() {
+      let ra = this.ra;
+      let cpf = this.cpf;
+      this.$store
+        .dispatch("login", { ra, cpf })
+        .then(() => this.$router.push("/quiz"))
+        .catch(err => console.log(err));
+    }
   }
 };
 </script>
