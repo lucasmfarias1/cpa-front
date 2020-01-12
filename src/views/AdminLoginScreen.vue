@@ -1,16 +1,14 @@
 <template>
-  <v-container class="fill-height">
+  <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col align="center">
-        <v-card>
-          <h1 class="title">WIP</h1>
-        </v-card>
-      </v-col>
+      <admin-login></admin-login>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import AdminLogin from "../components/AdminLogin.vue";
+
 export default {
   data() {
     return {
@@ -25,7 +23,7 @@ export default {
   },
 
   components: {
-    //
+    AdminLogin
   },
 
   methods: {

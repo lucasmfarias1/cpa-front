@@ -7,7 +7,7 @@
             <v-icon>mdi-contact-mail</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>Responder Questionários</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -20,7 +20,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/login">
+        <v-list-item link to="/admin-login">
           <v-list-item-action>
             <v-icon>mdi-contact-mail</v-icon>
           </v-list-item-action>
@@ -37,7 +37,32 @@
             <v-list-item-title>Logout</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item v-if="!$store.getters.isLoggedIn" link to="/user-login">
+          <v-list-item-action>
+            <v-icon>mdi-contact-mail</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login do aluno</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
+
+      <template v-if="$store.getters.isLoggedIn" v-slot:append>
+        <v-card>
+          <v-card-text>
+            <div>Aluno</div>
+            <p class="title text--primary mb-0">
+              {{ $store.getters.currentUser.name }}
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn text color="primary">
+              Meu perfil
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar app color="indigo" dark>
@@ -68,6 +93,7 @@ export default {
     this.$http.interceptors.response.use(undefined, function(err) {
       return new Promise(function() {
         if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          delete this.$http.defaults.headers.common["Authorization"];
           this.$store.dispatch("logout");
         }
         throw err;
@@ -86,6 +112,7 @@ export default {
   methods: {
     logout: function() {
       this.$store.dispatch("logout").then(() => {
+        delete this.$http.defaults.headers.common["Authorization"];
         if (this.$route.path !== "/") this.$router.push("/");
       });
     }

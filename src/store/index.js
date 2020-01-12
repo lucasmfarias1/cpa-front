@@ -10,8 +10,11 @@ export default new Vuex.Store({
     snackbarColor: "success",
     snackbar: false,
 
+    loading: false,
     status: "",
-    token: localStorage.getItem("token") || "",
+    token: localStorage.getItem("token")
+      ? `Bearer ${localStorage.getItem("token")}`
+      : "",
     user: {}
   },
 
@@ -28,7 +31,7 @@ export default new Vuex.Store({
 
     auth_success(state, payload) {
       state.status = "success";
-      state.token = payload.token;
+      state.token = `Bearer ${payload.token}`;
       state.user = payload.user;
     },
 
@@ -39,12 +42,23 @@ export default new Vuex.Store({
     logout(state) {
       state.status = "";
       state.token = "";
+      state.user = {};
+    },
+
+    set_user(state, user) {
+      state.user = user;
+    },
+
+    setLoading(state, boolean) {
+      state.loading = !!boolean;
     }
   },
 
-  getters : {
+  getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
+    currentUser: state => state.user,
+    isLoading: state => state.loading
   },
 
   actions: {
@@ -52,7 +66,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit("auth_request");
         axios({
-          url: "http://cpa.test/api/auth/login",
+          url: "http://cpa.test/api/v1/auth/login",
           data: user,
           method: "POST"
         })
@@ -60,12 +74,12 @@ export default new Vuex.Store({
             const token = resp.data.access_token;
             const user = resp.data.user;
             localStorage.setItem("token", token);
-            axios.defaults.headers.common["Authorization"] = token;
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             commit("auth_success", {
               token: token,
               user: user
             });
-            resolve(resp);
+            resolve({ token: token, user: user });
           })
           .catch(err => {
             commit("auth_error");
@@ -77,10 +91,29 @@ export default new Vuex.Store({
 
     logout({ commit }) {
       return new Promise(resolve => {
+        axios({
+          url: "http://cpa.test/api/v1/auth/logout",
+          method: "POST"
+        });
         commit("logout");
         localStorage.removeItem("token");
         delete axios.defaults.headers.common["Authorization"];
         resolve();
+      });
+    },
+
+    setCurrentUser({ commit }, token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "http://cpa.test/api/v1/auth/me",
+          method: "POST"
+        })
+          .then(response => {
+            commit("set_user", response.data);
+            resolve(response.data.user);
+          })
+          .catch(error => reject(error));
       });
     }
   },

@@ -64,6 +64,7 @@
             <v-btn
               :disabled="loading"
               class="success"
+              type="submit"
               @click.prevent="submitQuiz"
             >
               Salvar

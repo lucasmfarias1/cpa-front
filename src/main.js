@@ -19,7 +19,12 @@ Vue.prototype.$http = base;
 
 const token = localStorage.getItem("token");
 if (token) {
-  Vue.prototype.$http.defaults.headers.common["Authorization"] = token;
+  Vue.prototype.$http.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${token}`;
+  store.dispatch("setCurrentUser", token).catch(() => {
+    store.dispatch("logout");
+  });
 }
 
 Array.prototype.unique = function() {

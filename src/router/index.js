@@ -2,7 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store/index.js";
 import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
+import UserLoginScreen from "../views/UserLoginScreen.vue";
+import AdminLoginScreen from "../views/AdminLoginScreen.vue";
 import Questionario from "../views/Questionario.vue";
 import QuizIndex from "../views/QuizIndex.vue";
 import QuizCreate from "../views/QuizCreate.vue";
@@ -14,6 +15,14 @@ const routes = [
     path: "/",
     name: "home",
     component: Home
+  },
+  {
+    path: "/user-login",
+    name: "user-login",
+    component: UserLoginScreen,
+    meta: {
+      requiresGuest: true
+    }
   },
   {
     path: "/questionario",
@@ -39,9 +48,12 @@ const routes = [
     component: QuizCreate
   },
   {
-    path: "/login",
-    name: "login",
-    component: Login
+    path: "/admin-login",
+    name: "admin-login",
+    component: AdminLoginScreen,
+    meta: {
+      requiresGuest: true
+    }
   }
 ];
 
@@ -56,6 +68,11 @@ router.beforeEach((to, from, next) => {
       return;
     }
     next("/");
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    if (!store.getters.isLoggedIn) {
+      next();
+      return;
+    }
   } else {
     next();
   }
