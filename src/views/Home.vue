@@ -3,7 +3,28 @@
     <v-row align="center" justify="center">
       <v-col align="center">
         <v-card>
-          <h1 class="title">WIP</h1>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Questionário</th>
+                  <th class="text-left">Número de questões</th>
+                  <th class="text-left">Data limite</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="quiz in quizzes" :key="quiz.id">
+                  <td>{{ quiz.name }}</td>
+                  <td>{{ quiz.question_count }}</td>
+                  <td>{{ quiz.deadline }}</td>
+                  <td>
+                    <v-btn text class="primary">Responder questionário</v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
         </v-card>
       </v-col>
     </v-row>
@@ -14,14 +35,12 @@
 export default {
   data() {
     return {
-      ra: "123",
-      cpf: "425",
-      rules: {
-        required: value => !!value || "Campo obrigatório",
-        min: v => v.length >= 11 || "Mínimo 11 caracteres",
-        emailMatch: () => "Combinação de email e senha inválida"
-      }
+      quizzes: []
     };
+  },
+
+  mounted() {
+    this.getQuizzesFromApi();
   },
 
   components: {
@@ -29,13 +48,12 @@ export default {
   },
 
   methods: {
-    login() {
-      let ra = this.ra;
-      let cpf = this.cpf;
-      this.$store
-        .dispatch("login", { ra, cpf })
-        .then(() => this.$router.push("/quiz"))
-        .catch(err => console.log(err));
+    getQuizzesFromApi() {
+      this.loading = true;
+      this.$http.get("/active-quizzes").then(response => {
+        this.quizzes = response.data.quizzes;
+        this.loading = false;
+      });
     }
   }
 };

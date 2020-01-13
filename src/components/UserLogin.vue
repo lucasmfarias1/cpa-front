@@ -6,14 +6,6 @@
     <v-card-text>
       <v-form @submit.prevent="login">
         <v-text-field
-          :rules="[rules.required]"
-          label="RA"
-          class="input-group--focused"
-          prepend-icon="person"
-          v-model="ra"
-        ></v-text-field>
-
-        <v-text-field
           :rules="[rules.required, rules.min]"
           label="CPF"
           class="input-group--focused"
@@ -43,17 +35,28 @@ export default {
 
   methods: {
     login() {
-      let ra = this.ra;
       let cpf = this.cpf;
       this.$store
-        .dispatch("login", { ra, cpf })
+        .dispatch("login", { cpf })
         .then(response => {
           this.$http.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${response.token}`;
           this.$router.push("/");
         })
-        .catch(err => console.log(err));
+        .catch(error => {
+          let errorMessage;
+          if (error.response.status == 401) {
+            errorMessage = "CPF não encontrado";
+          } else {
+            errorMessage =
+              "Erro desconhecido. Por favor tente novamente mais tarde.";
+          }
+          this.$store.commit("setSnackbar", {
+            text: errorMessage,
+            color: "error"
+          });
+        });
     }
   }
 };
