@@ -25,24 +25,54 @@
     </template>
 
     <template v-slot:item.action="{ item }">
-      <v-btn class="mx-1" icon @click="deleteQuiz(item)">
-        <v-icon>
-          delete
-        </v-icon>
+      <v-btn
+        title="Deletar questionário"
+        class="mx-1"
+        icon
+        @click="deleteQuiz(item)"
+      >
+        <v-icon>delete</v-icon>
       </v-btn>
 
-      <v-btn class="mx-1" icon :to="'/quiz/edit/' + item.id">
+      <v-btn
+        title="Editar questionário"
+        class="mx-1"
+        icon
+        :to="'/quiz/edit/' + item.id"
+      >
         <v-icon>edit</v-icon>
       </v-btn>
+
+      <v-btn
+        title="Ativar questionário"
+        class="mx-1"
+        icon
+        @click.prevent="openModal(item)"
+      >
+        <v-icon>send</v-icon>
+      </v-btn>
+      <quiz-modal
+        :quiz="modalQuiz"
+        :open="modalOpen"
+        @closeModal="modalOpen = false"
+      ></quiz-modal>
     </template>
   </v-data-table>
 </template>
 
 <script>
+import QuizModal from "../components/QuizModal.vue";
+
 export default {
+  components: {
+    QuizModal
+  },
+
   data() {
     return {
       loading: true,
+      modalOpen: false,
+      modalQuiz: null,
       totalQuizzes: 0,
       quizzes: [],
       options: {},
@@ -99,6 +129,13 @@ export default {
         this.quizzes = response.data.quizzes.data;
         this.loading = false;
       });
+    },
+
+    openModal(quiz) {
+      if (quiz.status == 0) {
+        this.modalQuiz = quiz;
+        this.modalOpen = true;
+      }
     }
   }
 };
