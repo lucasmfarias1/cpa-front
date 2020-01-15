@@ -72,7 +72,7 @@ export default {
     return {
       loading: true,
       modalOpen: false,
-      modalQuiz: null,
+      modalQuiz: {},
       totalQuizzes: 0,
       quizzes: [],
       options: {},

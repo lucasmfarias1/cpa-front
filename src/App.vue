@@ -29,15 +29,6 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="$store.getters.isLoggedIn" @click.prevent="logout">
-          <v-list-item-action>
-            <v-icon>mdi-contact-mail</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
         <v-list-item v-if="!$store.getters.isLoggedIn" link to="/user-login">
           <v-list-item-action>
             <v-icon>mdi-contact-mail</v-icon>
@@ -48,8 +39,8 @@
         </v-list-item>
       </v-list>
 
-      <template v-if="$store.getters.isLoggedIn" v-slot:append>
-        <v-card>
+      <template v-slot:append>
+        <v-card v-if="$store.getters.isLoggedIn">
           <v-card-text>
             <div>Aluno</div>
             <p class="title text--primary mb-0">
@@ -57,8 +48,8 @@
             </p>
           </v-card-text>
           <v-card-actions>
-            <v-btn text color="primary">
-              Meu perfil
+            <v-btn text color="secondary" @click.prevent="logout">
+              Sair
             </v-btn>
           </v-card-actions>
         </v-card>
