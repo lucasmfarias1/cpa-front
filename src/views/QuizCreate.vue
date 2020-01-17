@@ -7,10 +7,11 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-form id="createform">
+        <v-form id="createform" v-model="valid">
           <div ref="colq">
             <v-row class="d-flex align-center">
               <v-text-field
+                :rules="[rules.required]"
                 :disabled="loading"
                 maxlength="191"
                 class="ma-4"
@@ -25,6 +26,7 @@
               :key="index"
             >
               <v-textarea
+                :rules="[rules.required]"
                 :disabled="loading"
                 @keyup.delete="deleteEmptyQuestion(question)"
                 @keydown.enter="addQuestion($event)"
@@ -62,7 +64,7 @@
               <span class="d-inline d-md-none">+ Questão</span>
             </v-btn>
             <v-btn
-              :disabled="loading"
+              :disabled="loading || !this.valid"
               class="success"
               type="submit"
               @click.prevent="submitQuiz"
@@ -80,12 +82,21 @@
 export default {
   data() {
     return {
-      loading: false,
+      valid: false,
+      rules: {
+        required: value => !!value || "Campo obrigatório"
+      },
       quiz: {
         name: "",
         questions: [{ body: "" }]
       }
     };
+  },
+
+  computed: {
+    loading() {
+      return this.$store.getters.isLoading;
+    }
   },
 
   mounted() {
@@ -132,6 +143,8 @@ export default {
     },
 
     submitQuiz() {
+      if (!this.valid) return;
+
       if (this.quiz.id) {
         this.updateQuiz();
       } else {
@@ -140,7 +153,7 @@ export default {
     },
 
     storeQuiz() {
-      this.loading = true;
+      this.$store.commit("setLoading", true);
       this.$http
         .post("quizzes", this.quiz)
         .then(response => {
@@ -150,7 +163,7 @@ export default {
             color: "success"
           });
           this.$router.replace({ path: `/quiz/edit/${response.data.quiz.id}` });
-          this.loading = false;
+          this.$store.commit("setLoading", false);
         })
         .catch(error => {
           const errorResponse = error.response.data.errors;
@@ -164,12 +177,12 @@ export default {
             text: `${errorArray}`,
             color: "error"
           });
-          this.loading = false;
+          this.$store.commit("setLoading", false);
         });
     },
 
     updateQuiz() {
-      this.loading = true;
+      this.$store.commit("setLoading", true);
       this.$http
         .patch(`quizzes/${this.quiz.id}`, this.quiz)
         .then(response => {
@@ -177,7 +190,7 @@ export default {
             text: `Questionário #${response.data.quiz.id} atualizado com sucesso`,
             color: "success"
           });
-          this.loading = false;
+          this.$store.commit("setLoading", false);
         })
         .catch(error => {
           const errorResponse = error.response.data.errors;
@@ -191,17 +204,17 @@ export default {
             text: `${errorArray}`,
             color: "error"
           });
-          this.loading = false;
+          this.$store.commit("setLoading", false);
         });
     },
 
     getQuizFromApi() {
-      this.loading = true;
+      this.$store.commit("setLoading", true);
       this.$http
         .get(`quizzes/${this.$route.params.id}`)
         .then(response => {
           this.quiz = response.data.quiz;
-          this.loading = false;
+          this.$store.commit("setLoading", false);
         })
         .catch(error => {
           console.log(error.response.data);

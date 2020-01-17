@@ -1,6 +1,11 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="open" persistent max-width="500px">
+    <v-dialog
+      v-model="open"
+      persistent
+      max-width="800px"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
       <v-card>
         <v-card-text class="pa-4">
           <v-form @submit.prevent="submit">
@@ -42,8 +47,8 @@
               <v-col cols="12">
                 <div class="text-center mt-2">
                   <p class="title red--text text--accent-4">
-                    Atenção: uma vez ativado, o questionário estará
-                    disponível para qualquer aluno responder.
+                    Atenção: uma vez ativado, o questionário estará disponível
+                    para qualquer aluno responder.
                   </p>
                 </div>
               </v-col>

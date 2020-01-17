@@ -4,16 +4,18 @@
       <v-toolbar-title>Login do aluno</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-form @submit.prevent="login">
+      <v-form @submit.prevent="login" v-model="valid">
         <v-text-field
           :rules="[rules.required, rules.min]"
           label="CPF"
           class="input-group--focused"
           prepend-icon="lock"
           v-model="cpf"
+          counter=11
+          maxlength=11
         ></v-text-field>
         <div class="text-right mt-2">
-          <v-btn color="primary" type="submit">Login</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!valid">Login</v-btn>
         </div>
       </v-form>
     </v-card-text>
@@ -24,6 +26,7 @@
 export default {
   data() {
     return {
+      valid: false,
       ra: "123",
       cpf: "425",
       rules: {
@@ -35,6 +38,7 @@ export default {
 
   methods: {
     login() {
+      if (!this.valid) return;
       let cpf = this.cpf;
       this.$store
         .dispatch("login", { cpf })
