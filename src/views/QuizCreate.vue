@@ -1,13 +1,13 @@
 <template>
-  <v-container m-0 id="createq">
-    <v-row justify="center" class="ma-5">
+  <v-container m-0 id="createq" ref="container">
+    <v-row justify="center" class="ma-5" ref="firstrow">
       <h2 class="title">
         Novo Questionário
       </h2>
     </v-row>
     <v-row>
       <v-col>
-        <v-form id="createform" v-model="valid">
+        <v-form ref="form" id="createform" v-model="valid">
           <div ref="colq">
             <v-row class="d-flex align-center">
               <v-text-field
@@ -21,7 +21,7 @@
               </v-text-field>
             </v-row>
             <v-row
-              class="d-flex align-center"
+              class="d-flex align-center mb-9"
               v-for="(question, index) in quiz.questions"
               :key="index"
             >
@@ -51,30 +51,39 @@
               </v-btn>
             </v-row>
           </div>
-          <v-row class="d-flex justify-center">
-            <v-btn class="secondary" to="/quiz">Voltar</v-btn>
-            <v-btn
-              class="mx-0 mx-sm-1 mx-md-5 primary"
-              :disabled="loading"
-              @click="addQuestion"
-            >
-              <span class="d-none d-sm-none d-md-inline">
-                Adicionar Questão
-              </span>
-              <span class="d-inline d-md-none">+ Questão</span>
-            </v-btn>
-            <v-btn
-              :disabled="loading || !this.valid"
-              class="success"
-              type="submit"
-              @click.prevent="submitQuiz"
-            >
-              Salvar
-            </v-btn>
-          </v-row>
         </v-form>
       </v-col>
     </v-row>
+
+    <v-footer
+      style="left: auto"
+      class="pa-0 ma-0"
+      fixed
+      ref="footer"
+      :width="footerWidth"
+    >
+      <v-row align="center" justify="center" class="py-3 mb-9">
+        <v-btn class="secondary" to="/quiz">Voltar</v-btn>
+        <v-btn
+          class="mx-0 mx-sm-1 mx-md-5 primary"
+          :disabled="loading"
+          @click="addQuestion"
+        >
+          <span class="d-none d-sm-none d-md-inline">
+            Adicionar Questão
+          </span>
+          <span class="d-inline d-md-none">+ Questão</span>
+        </v-btn>
+        <v-btn
+          :disabled="loading"
+          class="success"
+          type="submit"
+          @click.prevent="submitQuiz"
+        >
+          Salvar
+        </v-btn>
+      </v-row>
+    </v-footer>
   </v-container>
 </template>
 
@@ -82,6 +91,7 @@
 export default {
   data() {
     return {
+      footerWidth: 0,
       valid: false,
       rules: {
         required: value => !!value || "Campo obrigatório"
@@ -103,6 +113,11 @@ export default {
     if (this.$route.params.id) {
       this.getQuizFromApi();
     }
+
+    this.$nextTick(() => {
+      this.setFooterWidth();
+      window.addEventListener("resize", this.setFooterWidth);
+    });
   },
 
   methods: {
@@ -143,7 +158,11 @@ export default {
     },
 
     submitQuiz() {
-      if (!this.valid) return;
+      if (!this.valid) {
+        this.$refs.form.validate();
+        this.focusFirstInvalid();
+        return;
+      }
 
       if (this.quiz.id) {
         this.updateQuiz();
@@ -219,6 +238,26 @@ export default {
         .catch(error => {
           console.log(error.response.data);
         });
+    },
+
+    focusFirstInvalid(component = this) {
+      if (!component.valid) {
+        this.$vuetify.goTo(component);
+        return true;
+      }
+
+      let focused = false;
+
+      component.$children.some(childComponent => {
+        focused = this.focusFirstStatus(childComponent);
+        return focused;
+      });
+
+      return focused;
+    },
+
+    setFooterWidth() {
+      this.footerWidth = this.$refs.container.parentNode.clientWidth;
     }
   }
 };

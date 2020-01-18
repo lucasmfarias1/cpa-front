@@ -48,13 +48,14 @@
         class="mx-1"
         icon
         @click.prevent="openModal(item)"
+        v-if="item.status == 0"
       >
         <v-icon>send</v-icon>
       </v-btn>
       <quiz-modal
         :quiz="modalQuiz"
         :open="modalOpen"
-        @closeModal="modalOpen = false"
+        @closeModal="modalClosedHandler"
       ></quiz-modal>
     </template>
   </v-data-table>
@@ -70,7 +71,6 @@ export default {
 
   data() {
     return {
-      loading: true,
       modalOpen: false,
       modalQuiz: {},
       totalQuizzes: 0,
@@ -93,6 +93,12 @@ export default {
     };
   },
 
+  computed: {
+    loading() {
+      return this.$store.getters.isLoading;
+    }
+  },
+
   watch: {
     options: {
       handler() {
@@ -108,26 +114,27 @@ export default {
 
   methods: {
     deleteQuiz(quiz) {
-      const index = this.quizzes.indexOf(quiz);
       if (confirm("Are you sure you want to delete this quiz?")) {
+        this.$store.commit("setLoading", true);
         this.$http
           .delete("quizzes/" + quiz.id)
-          .then(response => {
-            console.log(response.data);
-            this.quizzes.splice(index, 1);
+          .then(() => {
+            // this.quizzes.splice(index, 1);
+            this.getDataFromApi();
+            this.$store.commit("setLoading", false);
           })
-          .catch(error => {
-            console.log(error);
+          .catch(() => {
+            this.$store.commit("setLoading", false);
           });
       }
     },
 
     getDataFromApi() {
-      this.loading = true;
+      this.$store.commit("setLoading", true);
       this.$http.get("quizzes", { params: this.options }).then(response => {
         this.totalQuizzes = response.data.quizzes.total;
         this.quizzes = response.data.quizzes.data;
-        this.loading = false;
+        this.$store.commit("setLoading", false);
       });
     },
 
@@ -136,6 +143,11 @@ export default {
         this.modalQuiz = quiz;
         this.modalOpen = true;
       }
+    },
+
+    modalClosedHandler(event, refresh = false) {
+      if (refresh) this.getDataFromApi();
+      this.modalOpen = false;
     }
   }
 };

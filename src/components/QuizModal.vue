@@ -8,7 +8,7 @@
     >
       <v-card>
         <v-card-text class="pa-4">
-          <v-form @submit.prevent="submit">
+          <v-form @submit.prevent="activateQuiz">
             <v-row>
               <v-col cols="12">
                 <h3 class="display-1 mb-2 text-center">
@@ -89,8 +89,34 @@ export default {
   },
 
   methods: {
-    submit() {
-      alert("submit");
+    activateQuiz() {
+      this.$store.commit("setLoading", true);
+      this.$http
+        .post(`quizzes/${this.quiz.id}/activate`, {
+          deadline: this.deadline
+        })
+        .then(response => {
+          this.$store.commit("setSnackbar", {
+            text: `Questionário #${response.data.quiz.id} ativado com sucesso`,
+            color: "success"
+          });
+          this.$emit("closeModal", event, true);
+          this.$store.commit("setLoading", false);
+        })
+        .catch(error => {
+          const errorResponse = error.response.data.errors;
+          let errorArray = [];
+          for (var errorInstance in errorResponse) {
+            errorArray.push(errorResponse[errorInstance][0]);
+          }
+          errorArray = errorArray.unique().join(" ");
+
+          this.$store.commit("setSnackbar", {
+            text: `${errorArray}`,
+            color: "error"
+          });
+          this.$store.commit("setLoading", false);
+        });
     }
   }
 };

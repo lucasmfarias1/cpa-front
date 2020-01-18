@@ -11,8 +11,8 @@
           class="input-group--focused"
           prepend-icon="lock"
           v-model="cpf"
-          counter=11
-          maxlength=11
+          counter="11"
+          maxlength="11"
         ></v-text-field>
         <div class="text-right mt-2">
           <v-btn color="primary" type="submit" :disabled="!valid">Login</v-btn>
