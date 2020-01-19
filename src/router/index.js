@@ -4,7 +4,7 @@ import store from "../store/index.js";
 import Home from "../views/Home.vue";
 import UserLoginScreen from "../views/UserLoginScreen.vue";
 import AdminLoginScreen from "../views/AdminLoginScreen.vue";
-import Questionario from "../views/Questionario.vue";
+import AnswerCard from "../views/AnswerCard.vue";
 import QuizIndex from "../views/QuizIndex.vue";
 import QuizCreate from "../views/QuizCreate.vue";
 
@@ -25,9 +25,9 @@ const routes = [
     }
   },
   {
-    path: "/questionario",
-    name: "questionario",
-    component: Questionario
+    path: "/answer-card",
+    name: "answer-card",
+    component: AnswerCard
   },
   {
     path: "/quiz",

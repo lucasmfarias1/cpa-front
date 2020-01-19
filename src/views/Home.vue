@@ -49,10 +49,10 @@ export default {
 
   methods: {
     getQuizzesFromApi() {
-      this.loading = true;
+      this.$store.commit("setLoading", true);
       this.$http.get("/active-quizzes").then(response => {
         this.quizzes = response.data.quizzes;
-        this.loading = false;
+        this.$store.commit("setLoading", false);
       });
     }
   }

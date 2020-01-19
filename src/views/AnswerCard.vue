@@ -3,12 +3,21 @@
     <v-row align="center" justify="center">
       <v-card width="100%" max-width="700px">
         <v-toolbar color="primary" dark flat>
-          <v-toolbar-title>Questionário XYZ - Página 1/3</v-toolbar-title>
+          <v-toolbar-title>Questionário {{ quiz.name }}</v-toolbar-title>
         </v-toolbar>
 
-        <v-card-text v-for="question in [1, 2, 3]" :key="question" class="mb-5">
-          <v-subheader>A faculdade tem laboratórios adequados</v-subheader>
-          <v-slider v-model="value" :rules="rules" step="1" :max="4"></v-slider>
+        <v-card-text
+          v-for="question in quiz.questions"
+          :key="question.id"
+          class="mb-5"
+        >
+          <v-subheader>{{ question.body }}</v-subheader>
+          <v-slider
+            v-model="answer_card.answers[question.body.id].value"
+            :rules="rules"
+            step="1"
+            :max="4"
+          ></v-slider>
           <div class="d-flex">
             <p>Discordo totalmente</p>
             <v-spacer></v-spacer>
@@ -29,6 +38,7 @@
 export default {
   data() {
     return {
+      quiz: {},
       rules: {
         required: value => !!value || "Campo obrigatório"
       }
