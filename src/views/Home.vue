@@ -19,7 +19,9 @@
                   <td>{{ quiz.question_count }}</td>
                   <td>{{ quiz.deadline }}</td>
                   <td>
-                    <v-btn text class="primary">Responder questionário</v-btn>
+                    <v-btn :to="`/answer-card/${quiz.id}`" text class="primary">
+                      Responder questionário
+                    </v-btn>
                   </td>
                 </tr>
               </tbody>

@@ -237,6 +237,7 @@ export default {
         })
         .catch(error => {
           console.log(error.response.data);
+          this.$store.commit("setLoading", false);
         });
     },
 

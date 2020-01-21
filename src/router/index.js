@@ -25,7 +25,7 @@ const routes = [
     }
   },
   {
-    path: "/answer-card",
+    path: "/answer-card/:id",
     name: "answer-card",
     component: AnswerCard
   },

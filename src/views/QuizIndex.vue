@@ -131,11 +131,16 @@ export default {
 
     getDataFromApi() {
       this.$store.commit("setLoading", true);
-      this.$http.get("quizzes", { params: this.options }).then(response => {
-        this.totalQuizzes = response.data.quizzes.total;
-        this.quizzes = response.data.quizzes.data;
-        this.$store.commit("setLoading", false);
-      });
+      this.$http
+        .get("quizzes", { params: this.options })
+        .then(response => {
+          this.totalQuizzes = response.data.quizzes.total;
+          this.quizzes = response.data.quizzes.data;
+          this.$store.commit("setLoading", false);
+        })
+        .catch(() => {
+          this.$store.commit("setLoading", false);
+        });
     },
 
     openModal(quiz) {
