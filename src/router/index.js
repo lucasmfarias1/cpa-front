@@ -7,6 +7,7 @@ import AdminLoginScreen from "../views/AdminLoginScreen.vue";
 import AnswerCard from "../views/AnswerCard.vue";
 import QuizIndex from "../views/QuizIndex.vue";
 import QuizCreate from "../views/QuizCreate.vue";
+import MyProfile from "../views/MyProfile.vue";
 
 Vue.use(VueRouter);
 
@@ -27,7 +28,10 @@ const routes = [
   {
     path: "/answer-card/:id",
     name: "answer-card",
-    component: AnswerCard
+    component: AnswerCard,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/quiz",
@@ -40,12 +44,18 @@ const routes = [
   {
     path: "/quiz/create",
     name: "quiz-create",
-    component: QuizCreate
+    component: QuizCreate,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/quiz/edit/:id",
     name: "quiz-edit",
-    component: QuizCreate
+    component: QuizCreate,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/admin-login",
@@ -53,6 +63,14 @@ const routes = [
     component: AdminLoginScreen,
     meta: {
       requiresGuest: true
+    }
+  },
+  {
+    path: "/meu-perfil",
+    name: "meu-perfil",
+    component: MyProfile,
+    meta: {
+      requiresAuth: true
     }
   }
 ];

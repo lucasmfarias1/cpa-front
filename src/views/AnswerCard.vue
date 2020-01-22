@@ -68,7 +68,7 @@ export default {
         .catch(() => {
           this.$store.commit("setSnackbar", {
             text: `Oops, algo deu errado.`,
-            color: "danger"
+            color: "error"
           });
           this.$router.push("/");
           this.$store.commit("setLoading", false);
@@ -77,14 +77,30 @@ export default {
 
     submitAnswers() {
       this.$store.commit("setLoading", true);
-      const answerCard = this.quiz.questions.map(question => {
+      const answers = this.quiz.questions.map(question => {
         return {
           value: question.answer,
           question_id: question.id
         };
-      })
+      });
+      const answerCard = { answers: answers };
       this.$http
-        .post(`answer-cards`, answerCard)
+        .post(`quizzes/${this.quiz.id}/answers`, answerCard)
+        .then(() => {
+          this.$store.commit("setSnackbar", {
+            text: `Questionário respondido com sucesso.`,
+            color: "success"
+          });
+          this.$router.push("/");
+          this.$store.commit("setLoading", false);
+        })
+        .catch(() => {
+          this.$store.commit("setSnackbar", {
+            text: `Oops, algo deu errado.`,
+            color: "error"
+          });
+          this.$store.commit("setLoading", false);
+        });
     }
   }
 };

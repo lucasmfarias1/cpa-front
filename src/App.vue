@@ -46,10 +46,16 @@
             <p class="title text--primary mb-0">
               {{ $store.getters.currentUser.name }}
             </p>
+            <p class="title text--primary mb-0">
+              {{ $store.getters.currentUser.course.shorthand }}
+            </p>
           </v-card-text>
           <v-card-actions>
             <v-btn text color="secondary" @click.prevent="logout">
               Sair
+            </v-btn>
+            <v-btn text color="secondary" to="/meu-perfil">
+              Meu Perfil
             </v-btn>
           </v-card-actions>
         </v-card>
