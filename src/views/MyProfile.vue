@@ -9,46 +9,67 @@
           <v-card-text>
             <v-form @submit.prevent="submit" v-model="valid">
               <v-text-field
-                :rules="[rules.required, rules.min]"
                 label="Nome"
                 class="input-group--focused"
                 prepend-icon="person"
-                :value="name"
+                :value="user.name"
+                readonly
               ></v-text-field>
               <v-text-field
                 label="CPF"
                 class="input-group--focused"
                 prepend-icon="person"
-                :value="cpf"
+                :value="user.cpf"
+                readonly
               ></v-text-field>
               <v-text-field
                 label="Email"
                 class="input-group--focused"
                 prepend-icon="person"
-                :value="email"
+                :value="user.email"
+                readonly
               ></v-text-field>
               <v-text-field
                 label="Curso"
                 class="input-group--focused"
                 prepend-icon="person"
-                :value="course"
-              ></v-text-field>
-              <v-text-field
-                label="Ciclo"
-                class="input-group--focused"
-                prepend-icon="person"
-                :value="term"
+                :value="user.course.name"
+                v-if="user.course"
+                readonly
               ></v-text-field>
               <v-text-field
                 label="Data de nascimento"
                 class="input-group--focused"
                 prepend-icon="person"
-                :value="birthdate"
+                :value="moment(user.birthdate).calendar()"
+                readonly
               ></v-text-field>
+
+              <v-select
+                :rules="[rules.required]"
+                prepend-icon="person"
+                :items="terms"
+                :value="user.term"
+                v-model="term"
+                label="Ciclo"
+              ></v-select>
+              <v-select
+                :rules="[rules.required]"
+                prepend-icon="person"
+                :items="sexes"
+                :value="user.sex"
+                label="Sexo"
+              ></v-select>
+
               <div class="text-right mt-2">
-                <v-btn color="primary" type="submit" :disabled="!valid"
-                  >Enviar</v-btn
+                <v-btn
+                  color="primary"
+                  type="submit"
+                  :disabled="!valid"
+                  :loading="loading"
                 >
+                  Salvar
+                </v-btn>
               </div>
             </v-form>
           </v-card-text>
@@ -62,24 +83,67 @@
 export default {
   data() {
     return {
-      ra: "123",
-      cpf: "425",
+      valid: false,
+
+      term: null,
+      sex: null,
+
+      terms: [
+        { text: "1º", value: 1 },
+        { text: "2º", value: 2 },
+        { text: "3º", value: 3 },
+        { text: "4º", value: 4 },
+        { text: "5º", value: 5 },
+        { text: "6º", value: 6 }
+      ],
+      sexes: [
+        { text: "Masculino", value: "male" },
+        { text: "Feminino", value: "female" }
+      ],
       rules: {
-        required: value => !!value || "Campo obrigatório",
-        min: v => v.length >= 11 || "Mínimo 11 caracteres",
-        emailMatch: () => "Combinação de email e senha inválida"
+        required: value => !!value || "Campo obrigatório"
       }
     };
   },
 
+  mounted() {
+    this.$store
+      .dispatch("refreshCurrentUser")
+      .then(user => {
+        console.log(user);
+        this.term = user.term;
+        this.sex = user.sex;
+      })
+      .catch(() => {
+        this.$store.dispatch("logout");
+      });
+  },
+
+  computed: {
+    user() {
+      return this.$store.getters.currentUser;
+    },
+
+    loading() {
+      return this.$store.getters.isLoading;
+    }
+  },
+
   methods: {
-    login() {
-      let ra = this.ra;
-      let cpf = this.cpf;
-      this.$store
-        .dispatch("login", { ra, cpf })
-        .then(() => this.$router.push("/quiz"))
-        .catch(err => console.log(err));
+    submit() {
+      this.$store.commit("setLoading", true);
+      this.$http
+        .post(`users/${this.user.id}`, {
+          term: this.term,
+          sex: this.sex
+        })
+        .then(() => {
+          this.$store.dispatch("refreshCurrentUser").catch(() => {
+            this.$store.dispatch("logout");
+          });
+          this.$store.commit("setLoading", false);
+        });
+      this.$store.commit("setLoading", false);
     }
   }
 };

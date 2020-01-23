@@ -44,10 +44,10 @@
           <v-card-text>
             <div>Aluno</div>
             <p class="title text--primary mb-0">
-              {{ $store.getters.currentUser.name }}
+              {{ username }}
             </p>
             <p class="title text--primary mb-0">
-              {{ $store.getters.currentUser.course.shorthand }}
+              {{ course }}
             </p>
           </v-card-text>
           <v-card-actions>
@@ -96,6 +96,20 @@ export default {
         throw err;
       });
     });
+  },
+
+  computed: {
+    username() {
+      return this.$store.getters.currentUser.name
+        ? this.$store.getters.currentUser.name
+        : "";
+    },
+
+    course() {
+      return this.$store.getters.currentUser.course
+        ? this.$store.getters.currentUser.course.shorthand
+        : "";
+    }
   },
 
   props: {

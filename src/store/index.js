@@ -58,7 +58,8 @@ export default new Vuex.Store({
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     currentUser: state => state.user,
-    isLoading: state => state.loading
+    isLoading: state => state.loading,
+    token: state => state.token
   },
 
   actions: {
@@ -112,6 +113,22 @@ export default new Vuex.Store({
           .then(response => {
             commit("set_user", response.data);
             resolve(response.data.user);
+          })
+          .catch(error => reject(error));
+      });
+    },
+
+    refreshCurrentUser({ commit }) {
+      const token = localStorage.getItem("token");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "http://cpa.test/api/v1/auth/me",
+          method: "POST"
+        })
+          .then(response => {
+            commit("set_user", response.data);
+            resolve(response.data);
           })
           .catch(error => reject(error));
       });
