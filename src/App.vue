@@ -4,28 +4,30 @@
       <v-list dense>
         <v-list-item link to="/">
           <v-list-item-action>
-            <v-icon>mdi-contact-mail</v-icon>
+            <v-icon>mdi-clipboard-list</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Responder Questionários</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/quiz">
-          <v-list-item-action>
-            <v-icon>mdi-contact-mail</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Questionários</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-divider dark class="my-2" />
 
         <v-list-item link to="/admin-login">
           <v-list-item-action>
-            <v-icon>mdi-contact-mail</v-icon>
+            <v-icon>mdi-shield-account</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Área do admin</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link to="/quiz">
+          <v-list-item-action>
+            <v-icon>mdi-clipboard-text-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Criar Questionários</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

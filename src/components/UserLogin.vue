@@ -15,7 +15,13 @@
           maxlength="11"
         ></v-text-field>
         <div class="text-right mt-2">
-          <v-btn color="primary" type="submit" :disabled="!valid">Login</v-btn>
+          <v-btn
+            :loading="$store.getters.isLoading"
+            color="primary"
+            type="submit"
+            :disabled="!valid"
+            >Login</v-btn
+          >
         </div>
       </v-form>
     </v-card-text>
@@ -39,6 +45,7 @@ export default {
   methods: {
     login() {
       if (!this.valid) return;
+      this.$store.commit("setLoading", true);
       let cpf = this.cpf;
       this.$store
         .dispatch("login", { cpf })
@@ -47,6 +54,7 @@ export default {
             "Authorization"
           ] = `Bearer ${response.token}`;
           this.$router.push("/");
+          this.$store.commit("setLoading", false);
         })
         .catch(error => {
           let errorMessage;
@@ -60,6 +68,7 @@ export default {
             text: errorMessage,
             color: "error"
           });
+          this.$store.commit("setLoading", false);
         });
     }
   }

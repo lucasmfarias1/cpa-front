@@ -18,21 +18,21 @@
               <v-text-field
                 label="CPF"
                 class="input-group--focused"
-                prepend-icon="person"
+                prepend-icon="mdi-account-card-details"
                 :value="user.cpf"
                 readonly
               ></v-text-field>
               <v-text-field
                 label="Email"
                 class="input-group--focused"
-                prepend-icon="person"
+                prepend-icon="mdi-at"
                 :value="user.email"
                 readonly
               ></v-text-field>
               <v-text-field
                 label="Curso"
                 class="input-group--focused"
-                prepend-icon="person"
+                prepend-icon="mdi-school"
                 :value="user.course.name"
                 v-if="user.course"
                 readonly
@@ -40,14 +40,14 @@
               <v-text-field
                 label="Data de nascimento"
                 class="input-group--focused"
-                prepend-icon="person"
+                prepend-icon="mdi-calendar-range"
                 :value="moment(user.birthdate).calendar()"
                 readonly
               ></v-text-field>
 
               <v-select
                 :rules="[rules.required]"
-                prepend-icon="person"
+                prepend-icon="mdi-format-list-numbered-rtl"
                 :items="terms"
                 :value="user.term"
                 v-model="term"
@@ -55,9 +55,10 @@
               ></v-select>
               <v-select
                 :rules="[rules.required]"
-                prepend-icon="person"
+                prepend-icon="mdi-gender-male-female"
                 :items="sexes"
                 :value="user.sex"
+                v-model="sex"
                 label="Sexo"
               ></v-select>
 
@@ -110,7 +111,6 @@ export default {
     this.$store
       .dispatch("refreshCurrentUser")
       .then(user => {
-        console.log(user);
         this.term = user.term;
         this.sex = user.sex;
       })
@@ -138,9 +138,11 @@ export default {
           sex: this.sex
         })
         .then(() => {
-          this.$store.dispatch("refreshCurrentUser").catch(() => {
-            this.$store.dispatch("logout");
+          this.$store.commit("setSnackbar", {
+            text: `Perfil atualizado com sucesso.`,
+            color: "success"
           });
+          this.$store.dispatch("refreshCurrentUser");
           this.$store.commit("setLoading", false);
         });
       this.$store.commit("setLoading", false);

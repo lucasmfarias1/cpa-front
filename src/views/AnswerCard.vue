@@ -65,7 +65,9 @@ export default {
           });
           this.$store.commit("setLoading", false);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error.response);
+          
           this.$store.commit("setSnackbar", {
             text: `Oops, algo deu errado.`,
             color: "error"

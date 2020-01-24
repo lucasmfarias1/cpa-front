@@ -21,7 +21,7 @@
           v-model="senha"
         ></v-text-field>
         <div class="text-right mt-2">
-          <v-btn color="primary" type="submit">Login</v-btn>
+          <v-btn :loading="$store.getters.isLoading" color="primary" type="submit">Login</v-btn>
         </div>
       </v-form>
     </v-card-text>

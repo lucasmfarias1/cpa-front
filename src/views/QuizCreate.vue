@@ -66,7 +66,7 @@
         <v-btn class="secondary" to="/quiz">Voltar</v-btn>
         <v-btn
           class="mx-0 mx-sm-1 mx-md-5 primary"
-          :disabled="loading"
+          :loading="loading"
           @click="addQuestion"
         >
           <span class="d-none d-sm-none d-md-inline">
@@ -75,7 +75,7 @@
           <span class="d-inline d-md-none">+ Questão</span>
         </v-btn>
         <v-btn
-          :disabled="loading"
+          :loading="loading"
           class="success"
           type="submit"
           @click.prevent="submitQuiz"
@@ -160,7 +160,10 @@ export default {
     submitQuiz() {
       if (!this.valid) {
         this.$refs.form.validate();
-        this.focusFirstInvalid();
+        this.$store.commit("setSnackbar", {
+          text: `Por favor não deixe campos vazios no formulário.`,
+          color: "error"
+        });
         return;
       }
 
@@ -235,26 +238,9 @@ export default {
           this.quiz = response.data.quiz;
           this.$store.commit("setLoading", false);
         })
-        .catch(error => {
-          console.log(error.response.data);
+        .catch(() => {
           this.$store.commit("setLoading", false);
         });
-    },
-
-    focusFirstInvalid(component = this) {
-      if (!component.valid) {
-        this.$vuetify.goTo(component);
-        return true;
-      }
-
-      let focused = false;
-
-      component.$children.some(childComponent => {
-        focused = this.focusFirstStatus(childComponent);
-        return focused;
-      });
-
-      return focused;
     },
 
     setFooterWidth() {
