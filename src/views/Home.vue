@@ -17,9 +17,13 @@
                 <tr v-for="quiz in quizzes" :key="quiz.id">
                   <td>{{ quiz.name }}</td>
                   <td>{{ quiz.question_count }}</td>
-                  <td>{{ quiz.deadline }}</td>
+                  <td>{{ moment(quiz.deadline).calendar() }}</td>
                   <td>
-                    <v-btn :to="`/answer-card/${quiz.id}`" text class="primary">
+                    <v-btn
+                      @click="checkUserCanAnswer(quiz.id)"
+                      text
+                      class="primary"
+                    >
                       Responder questionário
                     </v-btn>
                   </td>
@@ -50,6 +54,31 @@ export default {
   },
 
   methods: {
+    checkUserCanAnswer(quizId) {
+      if (!this.$store.getters.isLoggedIn) {
+        this.$store.commit("setSnackbar", {
+          text: `Por favor faça login para responder ao questionário.`,
+          color: "secondary"
+        });
+        this.$router.push("/user-login");
+      } else {
+        this.$store.commit("setLoading", true);
+        this.$http
+          .get(`quizzes/${quizId}/check`)
+          .then(() => {
+            this.$router.push(`/answer-card/${quizId}`);
+            this.$store.commit("setLoading", false);
+          })
+          .catch(() => {
+            this.$store.commit("setSnackbar", {
+              text: `Você já respondeu a este questionário.`,
+              color: "error"
+            });
+            this.$store.commit("setLoading", false);
+          });
+      }
+    },
+
     getQuizzesFromApi() {
       this.$store.commit("setLoading", true);
       this.$http.get("/active-quizzes").then(response => {

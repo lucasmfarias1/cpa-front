@@ -12,7 +12,7 @@ import UserLogin from "../components/UserLogin.vue";
 export default {
   data() {
     return {
-      // 
+      //
     };
   },
 
@@ -21,7 +21,7 @@ export default {
   },
 
   methods: {
-    // 
+    //
   }
 };
 </script>

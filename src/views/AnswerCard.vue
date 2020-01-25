@@ -49,8 +49,16 @@ export default {
   },
 
   mounted() {
-    // if (this.$route.params.id)
-    this.getQuizFromApi();
+    if (!this.$store.getters.currentUser.has_completed_profile) {
+      this.$store.commit("setSnackbar", {
+        text: `Por favor complete seu perfil para responder ao questionário.`,
+        color: "error"
+      });
+      this.$router.push("/meu-perfil");
+    } else {
+      this.getQuizFromApi();
+    }
+
   },
 
   methods: {
@@ -65,9 +73,9 @@ export default {
           });
           this.$store.commit("setLoading", false);
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error.response);
-          
+
           this.$store.commit("setSnackbar", {
             text: `Oops, algo deu errado.`,
             color: "error"
