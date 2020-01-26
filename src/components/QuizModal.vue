@@ -3,6 +3,7 @@
     <v-dialog
       v-model="open"
       persistent
+      :retain-focus="false"
       max-width="800px"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >

@@ -20,8 +20,22 @@
       </v-toolbar>
     </template>
 
+    <template v-slot:item.status="{ item }">
+      <v-chip
+        class="ma-2"
+        :color="statusChips[item.status].color"
+        :text-color="statusChips[item.status].textColor"
+      >
+        {{ statusChips[item.status].text }}
+      </v-chip>
+    </template>
+
     <template v-slot:item.created_at="{ item }">
-      <span>{{ moment(item.created_at).endOf('day').calendar() }}</span>
+      <span>{{
+        moment(item.created_at)
+          .endOf("day")
+          .calendar()
+      }}</span>
     </template>
 
     <template v-slot:item.action="{ item }">
@@ -30,6 +44,7 @@
         class="mx-1"
         icon
         @click="deleteQuiz(item)"
+        v-if="item.status == 0"
       >
         <v-icon>delete</v-icon>
       </v-btn>
@@ -38,6 +53,7 @@
         title="Editar questionário"
         class="mx-1"
         icon
+        v-if="item.status == 0"
         :to="'/quiz/edit/' + item.id"
       >
         <v-icon>edit</v-icon>
@@ -51,6 +67,16 @@
         v-if="item.status == 0"
       >
         <v-icon>send</v-icon>
+      </v-btn>
+
+      <v-btn
+        title="Encerrar questionário"
+        class="mx-1"
+        icon
+        @click.prevent="finishQuiz(item)"
+        v-if="item.status == 1"
+      >
+        <v-icon>mdi-flag-checkered</v-icon>
       </v-btn>
       <quiz-modal
         :quiz="modalQuiz"
@@ -83,12 +109,21 @@ export default {
           value: "name"
         },
         {
+          text: "Status",
+          value: "status"
+        },
+        {
           text: "Número de questões",
           value: "question_count",
           sortable: false
         },
         { text: "Data de criação", value: "created_at" },
         { text: "", value: "action", sortable: false }
+      ],
+      statusChips: [
+        { text: "Pendente", color: "default", textColor: "#000" },
+        { text: "Ativo", color: "primary", textColor: "#fff" },
+        { text: "Encerrado", color: "green", textColor: "#fff" }
       ]
     };
   },
@@ -114,7 +149,7 @@ export default {
 
   methods: {
     deleteQuiz(quiz) {
-      if (confirm("Are you sure you want to delete this quiz?")) {
+      if (confirm("Tem certeza que quer deletar este questionário?")) {
         this.$store.commit("setLoading", true);
         this.$http
           .delete("quizzes/" + quiz.id)
@@ -153,6 +188,29 @@ export default {
     modalClosedHandler(event, refresh = false) {
       if (refresh) this.getDataFromApi();
       this.modalOpen = false;
+    },
+
+    finishQuiz(quiz) {
+      if (confirm("Tem certeza que quer encerrar este questionário?")) {
+        this.$store.commit("setLoading", true);
+        this.$http
+          .post(`quizzes/${quiz.id}/finish`)
+          .then(() => {
+            this.$store.commit("setSnackbar", {
+              text: `Questionário #${quiz.id} encerrado com sucesso.`,
+              color: "success"
+            });
+            this.getDataFromApi();
+            this.$store.commit("setLoading", false);
+          })
+          .catch(() => {
+            this.$store.commit("setSnackbar", {
+              text: "Oops, algo de errado. Por favor tente novamente.",
+              color: "error"
+            });
+            this.$store.commit("setLoading", false);
+          });
+      }
     }
   }
 };
