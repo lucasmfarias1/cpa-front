@@ -21,7 +21,7 @@
     </template>
 
     <template v-slot:item.created_at="{ item }">
-      <span>{{ moment(item.created_at).calendar() }}</span>
+      <span>{{ moment(item.created_at).endOf('day').calendar() }}</span>
     </template>
 
     <template v-slot:item.action="{ item }">

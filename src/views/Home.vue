@@ -2,8 +2,13 @@
   <v-container class="fill-height">
     <v-row align="center" justify="center">
       <v-col align="center">
-        <v-card>
-          <v-simple-table>
+        <v-card class="py-1">
+          <v-progress-circular
+            v-if="$store.getters.isLoading"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+          <v-simple-table v-else>
             <template v-slot:default>
               <thead>
                 <tr>
@@ -14,10 +19,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="quiz in quizzes" :key="quiz.id">
+                <tr v-for="quiz in availableQuizzes" :key="quiz.id">
                   <td>{{ quiz.name }}</td>
                   <td>{{ quiz.question_count }}</td>
-                  <td>{{ moment(quiz.deadline).calendar() }}</td>
+                  <td>
+                    {{
+                      moment(quiz.deadline)
+                        .endOf("day")
+                        .calendar()
+                    }}
+                  </td>
                   <td>
                     <v-btn
                       @click="checkUserCanAnswer(quiz.id)"
@@ -47,6 +58,12 @@ export default {
 
   mounted() {
     this.getQuizzesFromApi();
+  },
+
+  computed: {
+    availableQuizzes() {
+      return this.quizzes.filter(quiz => quiz.is_available);
+    }
   },
 
   components: {

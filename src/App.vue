@@ -11,6 +11,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item v-if="!$store.getters.isLoggedIn" link to="/user-login">
+          <v-list-item-action>
+            <v-icon>mdi-contact-mail</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login do aluno</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-divider dark class="my-2" />
 
         <v-list-item link to="/admin-login">
@@ -28,15 +37,6 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Criar Questionários</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item v-if="!$store.getters.isLoggedIn" link to="/user-login">
-          <v-list-item-action>
-            <v-icon>mdi-contact-mail</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Login do aluno</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -80,7 +80,7 @@
       bottom
       v-model="$store.state.snackbar"
       :color="$store.state.snackbarColor"
-      :timeout="6000"
+      :timeout="5000"
       >{{ $store.state.snackbarText }}</v-snackbar
     >
   </v-app>
