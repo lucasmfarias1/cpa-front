@@ -13,10 +13,20 @@
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>Questionários</v-toolbar-title>
+        <v-toolbar-title>
+          Questionários
+          <span v-if="archived">Arquivados</span>
+        </v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-btn color="primary" dark class="mb-2" to="/quiz/create">Novo</v-btn>
+        <v-btn
+          v-if="!archived"
+          color="primary"
+          dark
+          class="mb-2"
+          to="/quiz/create"
+          >Novo</v-btn
+        >
       </v-toolbar>
     </template>
 
@@ -33,7 +43,6 @@
     <template v-slot:item.created_at="{ item }">
       <span>{{
         moment(item.created_at)
-          .endOf("day")
           .calendar()
       }}</span>
     </template>
@@ -78,6 +87,16 @@
       >
         <v-icon>mdi-flag-checkered</v-icon>
       </v-btn>
+
+      <v-btn
+        title="Arquivar/desarquivar questionário"
+        class="mx-1"
+        icon
+        @click.prevent="archiveQuiz(item)"
+        v-if="item.status == 2 || item.status == 3"
+      >
+        <v-icon>mdi-file-cabinet</v-icon>
+      </v-btn>
       <quiz-modal
         :quiz="modalQuiz"
         :open="modalOpen"
@@ -95,6 +114,8 @@ export default {
     QuizModal
   },
 
+  props: ["archived"],
+
   data() {
     return {
       modalOpen: false,
@@ -103,6 +124,11 @@ export default {
       quizzes: [],
       options: {},
       headers: [
+        {
+          text: "ID",
+          align: "left",
+          value: "id"
+        },
         {
           text: "Nome",
           align: "left",
@@ -118,12 +144,13 @@ export default {
           sortable: false
         },
         { text: "Data de criação", value: "created_at" },
-        { text: "", value: "action", sortable: false }
+        { text: "Ações", value: "action", sortable: false }
       ],
       statusChips: [
         { text: "Pendente", color: "default", textColor: "#000" },
         { text: "Ativo", color: "primary", textColor: "#fff" },
-        { text: "Encerrado", color: "green", textColor: "#fff" }
+        { text: "Encerrado", color: "green", textColor: "#fff" },
+        { text: "Arquivado", color: "grey", textColor: "#fff" }
       ]
     };
   },
@@ -166,8 +193,13 @@ export default {
 
     getDataFromApi() {
       this.$store.commit("setLoading", true);
+
+      const options = this.archived
+        ? { ...this.options, archived: true }
+        : this.options;
+
       this.$http
-        .get("quizzes", { params: this.options })
+        .get("quizzes", { params: options })
         .then(response => {
           this.totalQuizzes = response.data.quizzes.total;
           this.quizzes = response.data.quizzes.data;
@@ -211,6 +243,27 @@ export default {
             this.$store.commit("setLoading", false);
           });
       }
+    },
+
+    archiveQuiz(quiz) {
+      this.$store.commit("setLoading", true);
+      this.$http
+        .post(`quizzes/${quiz.id}/archive`)
+        .then(() => {
+          this.$store.commit("setSnackbar", {
+            text: `Questionário #${quiz.id} (des)arquivado.`,
+            color: "success"
+          });
+          this.getDataFromApi();
+          this.$store.commit("setLoading", false);
+        })
+        .catch(() => {
+          this.$store.commit("setSnackbar", {
+            text: "Oops, algo de errado. Por favor tente novamente.",
+            color: "error"
+          });
+          this.$store.commit("setLoading", false);
+        });
     }
   }
 };

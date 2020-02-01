@@ -42,6 +42,15 @@ const routes = [
     }
   },
   {
+    path: "/quiz-archive",
+    name: "quiz-archive",
+    component: QuizIndex,
+    props: { archived: true },
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/quiz/create",
     name: "quiz-create",
     component: QuizCreate,

@@ -27,7 +27,7 @@
             <v-icon>mdi-shield-account</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Área do admin</v-list-item-title>
+            <v-list-item-title>Área do Admin</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -37,6 +37,15 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Criar Questionários</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link to="/quiz-archive">
+          <v-list-item-action>
+            <v-icon>mdi-file-cabinet</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Questionários Arquivados</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -70,7 +79,7 @@
     </v-app-bar>
 
     <v-content id="content" class="white d-flex justify-center">
-      <router-view></router-view>
+      <router-view :key="$route.path"></router-view>
     </v-content>
     <v-footer color="indigo" class="d-none d-sm-flex" app>
       <span class="white--text">Desenvolvido pela equipe web da Fatec-RL</span>
