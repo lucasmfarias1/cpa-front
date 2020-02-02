@@ -41,10 +41,7 @@
     </template>
 
     <template v-slot:item.created_at="{ item }">
-      <span>{{
-        moment(item.created_at)
-          .calendar()
-      }}</span>
+      <span>{{ moment(item.created_at).calendar() }}</span>
     </template>
 
     <template v-slot:item.action="{ item }">
@@ -97,6 +94,17 @@
       >
         <v-icon>mdi-file-cabinet</v-icon>
       </v-btn>
+
+      <v-btn
+        title="Mostrar resultados"
+        class="mx-1"
+        icon
+        :to="`/quiz/${item.id}/results`"
+        v-if="item.status == 2 || item.status == 3"
+      >
+        <v-icon>mdi-clipboard-check</v-icon>
+      </v-btn>
+
       <quiz-modal
         :quiz="modalQuiz"
         :open="modalOpen"
@@ -183,9 +191,17 @@ export default {
           .then(() => {
             // this.quizzes.splice(index, 1);
             this.getDataFromApi();
+            this.$store.commit("setSnackbar", {
+              text: `Questionário #${quiz.id} deletado com sucesso.`,
+              color: "success"
+            });
             this.$store.commit("setLoading", false);
           })
           .catch(() => {
+            this.$store.commit("setSnackbar", {
+              text: "Oops, algo de errado. Por favor tente novamente.",
+              color: "error"
+            });
             this.$store.commit("setLoading", false);
           });
       }
@@ -228,11 +244,11 @@ export default {
         this.$http
           .post(`quizzes/${quiz.id}/finish`)
           .then(() => {
+            this.getDataFromApi();
             this.$store.commit("setSnackbar", {
               text: `Questionário #${quiz.id} encerrado com sucesso.`,
               color: "success"
             });
-            this.getDataFromApi();
             this.$store.commit("setLoading", false);
           })
           .catch(() => {
@@ -250,11 +266,12 @@ export default {
       this.$http
         .post(`quizzes/${quiz.id}/archive`)
         .then(() => {
+          this.getDataFromApi();
+          const verb = quiz.status == 2 ? "arquivado" : "desarquivado";
           this.$store.commit("setSnackbar", {
-            text: `Questionário #${quiz.id} (des)arquivado.`,
+            text: `Questionário #${quiz.id} ${verb}.`,
             color: "success"
           });
-          this.getDataFromApi();
           this.$store.commit("setLoading", false);
         })
         .catch(() => {

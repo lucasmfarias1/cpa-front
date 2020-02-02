@@ -7,6 +7,7 @@ import AdminLoginScreen from "../views/AdminLoginScreen.vue";
 import AnswerCard from "../views/AnswerCard.vue";
 import QuizIndex from "../views/QuizIndex.vue";
 import QuizCreate from "../views/QuizCreate.vue";
+import ResultsShow from "../views/ResultsShow.vue";
 import MyProfile from "../views/MyProfile.vue";
 
 Vue.use(VueRouter);
@@ -62,6 +63,14 @@ const routes = [
     path: "/quiz/edit/:id",
     name: "quiz-edit",
     component: QuizCreate,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/quiz/:id/results",
+    name: "quiz-result",
+    component: ResultsShow,
     meta: {
       requiresAuth: true
     }

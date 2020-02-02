@@ -89,7 +89,7 @@
       bottom
       v-model="$store.state.snackbar"
       :color="$store.state.snackbarColor"
-      :timeout="5000"
+      :timeout="3000"
       >{{ $store.state.snackbarText }}</v-snackbar
     >
   </v-app>

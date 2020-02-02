@@ -11,14 +11,14 @@
           <v-simple-table v-else>
             <template v-slot:default>
               <thead>
-                <tr>
+                <tr v-if="availableQuizzes.length > 0">
                   <th class="text-left">Questionário</th>
                   <th class="text-left">Número de questões</th>
                   <th class="text-left">Data limite</th>
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody v-if="availableQuizzes.length > 0">
                 <tr v-for="quiz in availableQuizzes" :key="quiz.id">
                   <td>{{ quiz.name }}</td>
                   <td>{{ quiz.question_count }}</td>
@@ -38,6 +38,13 @@
                       Responder questionário
                     </v-btn>
                   </td>
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr>
+                  <th colspan="3">
+                    <h3 class="title text-center">Nenhum questionário ativo no momento</h3>
+                  </th>
                 </tr>
               </tbody>
             </template>
