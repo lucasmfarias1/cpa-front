@@ -43,7 +43,9 @@
               <tbody v-else>
                 <tr>
                   <th colspan="3">
-                    <h3 class="title text-center">Nenhum questionário ativo no momento</h3>
+                    <h3 class="title text-center">
+                      Nenhum questionário ativo no momento
+                    </h3>
                   </th>
                 </tr>
               </tbody>

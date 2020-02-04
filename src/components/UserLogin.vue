@@ -33,8 +33,7 @@ export default {
   data() {
     return {
       valid: false,
-      ra: "123",
-      cpf: "425",
+      cpf: "",
       rules: {
         required: value => !!value || "Campo obrigatório",
         min: v => v.length >= 11 || "Mínimo 11 caracteres"

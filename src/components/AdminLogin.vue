@@ -4,7 +4,7 @@
       <v-toolbar-title>Área do admin - Login</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-form @submit.prevent="login">
+      <v-form @submit.prevent="login" v-model="valid">
         <v-text-field
           :rules="[rules.required, rules.min]"
           label="CPF"
@@ -14,15 +14,16 @@
         ></v-text-field>
 
         <v-text-field
-          :rules="[rules.required]"
+          :rules="[rules.required, rules.min]"
           label="Senha"
           class="input-group--focused"
           prepend-icon="lock"
-          v-model="senha"
+          v-model="password"
         ></v-text-field>
         <div class="text-right mt-2">
           <v-btn
             :loading="$store.getters.isLoading"
+            :disabled="!valid"
             color="primary"
             type="submit"
             >Login</v-btn
@@ -37,23 +38,42 @@
 export default {
   data() {
     return {
-      cpf: "425",
-      senha: "123",
+      valid: false,
+      cpf: "",
+      password: "",
       rules: {
         required: value => !!value || "Campo obrigatório",
-        min: v => v.length >= 11 || "Mínimo 11 caracteres"
+        min: v => v.length >= 4 || "Mínimo 4 caracteres"
       }
     };
   },
 
   methods: {
     login() {
+      this.$store.commit("setLoading", true);
+
       let cpf = this.cpf;
-      let senha = this.senha;
+      let password = this.password;
       this.$store
-        .dispatch("login", { cpf, senha })
-        .then(() => this.$router.push("/quiz"))
-        .catch(err => console.log(err));
+        .dispatch("login", { cpf, password })
+        .then(response => {
+          this.$http.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${response.token}`;
+          this.$store.commit("setSnackbar", {
+            text: "Login de admin realizado com sucesso.",
+            color: "success"
+          });
+          this.$router.push("/quiz");
+          this.$store.commit("setLoading", false);
+        })
+        .catch(() => {
+          this.$store.commit("setSnackbar", {
+            text: "Credenciais incorretas. Por favor tente novamente.",
+            color: "error"
+          });
+          this.$store.commit("setLoading", false);
+        });
     }
   }
 };
