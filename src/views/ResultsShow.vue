@@ -8,37 +8,91 @@
       hide-default-footer
     >
       <template v-slot:header>
-        <v-toolbar dark color="blue darken-3" class="mb-1">
-          <v-text-field
-            v-model="search"
-            clearable
-            flat
-            solo-inverted
-            hide-details
-            prepend-inner-icon="search"
-            label="Buscar"
-          ></v-text-field>
-          <template v-if="$vuetify.breakpoint.mdAndUp">
-            <v-spacer></v-spacer>
-            <v-select
-              v-model="sortBy"
+        <v-card>
+          <v-toolbar dark color="blue darken-3" class="mb-1">
+            <v-text-field
+              v-model="search"
+              clearable
               flat
+              solo-inverted
               hide-details
-              :items="keys"
-              prepend-inner-icon="sort"
-              label="Ordenar por"
-            ></v-select>
-            <v-spacer></v-spacer>
-            <v-btn-toggle v-model="sortDesc" mandatory>
-              <v-btn large depressed color="blue" :value="false">
-                <v-icon>mdi-arrow-up</v-icon>
-              </v-btn>
-              <v-btn large depressed color="blue" :value="true">
-                <v-icon>mdi-arrow-down</v-icon>
-              </v-btn>
-            </v-btn-toggle>
-          </template>
-        </v-toolbar>
+              prepend-inner-icon="search"
+              label="Buscar"
+            ></v-text-field>
+            <template v-if="$vuetify.breakpoint.mdAndUp">
+              <v-spacer></v-spacer>
+              <v-select
+                v-model="sortBy"
+                flat
+                hide-details
+                :items="keys"
+                prepend-inner-icon="sort"
+                label="Ordenar por"
+              ></v-select>
+              <v-spacer></v-spacer>
+              <v-btn-toggle v-model="sortDesc" mandatory>
+                <v-btn large depressed color="blue" :value="false">
+                  <v-icon>mdi-arrow-up</v-icon>
+                </v-btn>
+                <v-btn large depressed color="blue" :value="true">
+                  <v-icon>mdi-arrow-down</v-icon>
+                </v-btn>
+              </v-btn-toggle>
+            </template>
+          </v-toolbar>
+
+          <v-card-text>
+            <h4 class="title">Filtros</h4>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="search"
+                  clearable
+                  flat
+                  solo-inverted
+                  hide-details
+                  prepend-inner-icon="search"
+                  label="Buscar"
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="search"
+                  clearable
+                  flat
+                  solo-inverted
+                  hide-details
+                  prepend-inner-icon="search"
+                  label="Buscar"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="search"
+                  clearable
+                  flat
+                  solo-inverted
+                  hide-details
+                  prepend-inner-icon="search"
+                  label="Buscar"
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="search"
+                  clearable
+                  flat
+                  solo-inverted
+                  hide-details
+                  prepend-inner-icon="search"
+                  label="Buscar"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </template>
 
       <template v-slot:default="props">
@@ -154,7 +208,7 @@ export default {
     },
 
     percent(number) {
-      return `${number * 100}%`
+      return `${number * 100}%`;
     }
   }
 };
