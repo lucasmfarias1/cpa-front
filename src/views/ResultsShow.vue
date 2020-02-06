@@ -42,55 +42,95 @@
           </v-toolbar>
 
           <v-card-text>
-            <h4 class="title">Filtros</h4>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="search"
-                  clearable
-                  flat
-                  solo-inverted
-                  hide-details
-                  prepend-inner-icon="search"
-                  label="Buscar"
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="search"
-                  clearable
-                  flat
-                  solo-inverted
-                  hide-details
-                  prepend-inner-icon="search"
-                  label="Buscar"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="search"
-                  clearable
-                  flat
-                  solo-inverted
-                  hide-details
-                  prepend-inner-icon="search"
-                  label="Buscar"
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="search"
-                  clearable
-                  flat
-                  solo-inverted
-                  hide-details
-                  prepend-inner-icon="search"
-                  label="Buscar"
-                ></v-text-field>
-              </v-col>
-            </v-row>
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  <h3 class="title">Filtros</h3>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="filters.min_age"
+                        clearable
+                        label="Idade Mínima"
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="filters.max_age"
+                        clearable
+                        label="Idade Máxima"
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider></v-divider>
+
+                  <v-row>
+                    <v-col>
+                      <h4>Curso</h4>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <v-col v-for="course in courses" :key="course.id">
+                      <v-checkbox
+                        v-model="filters.courses"
+                        :label="course.shorthand"
+                        :value="course.id"
+                      ></v-checkbox>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider></v-divider>
+
+                  <v-row>
+                    <v-col>
+                      <h4>Ciclo</h4>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <v-col v-for="term in terms" :key="term">
+                      <v-checkbox
+                        v-model="filters.terms"
+                        :label="`${term}º`"
+                        :value="term"
+                      ></v-checkbox>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider></v-divider>
+
+                  <v-row>
+                    <v-col>
+                      <h4>Sexo</h4>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <v-col v-for="sex in sexes" :key="sex.value">
+                      <v-checkbox
+                        v-model="filters.sexes"
+                        :label="sex.text"
+                        :value="sex.value"
+                      ></v-checkbox>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <v-col>
+                      <v-btn :loading="loading" @click="getResultsFromApi">
+                        Filtrar
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-card-text>
         </v-card>
       </template>
@@ -138,8 +178,21 @@ export default {
     return {
       quiz: {},
       results: [],
+      filters: {
+        courses: [],
+        terms: [1, 2, 3, 4, 5, 6],
+        sexes: ["male", "female"],
+        min_age: null,
+        max_age: null
+      },
+      terms: [1, 2, 3, 4, 5, 6],
+      sexes: [
+        { value: "male", text: "Masculino" },
+        { value: "female", text: "Feminino" }
+      ],
       search: "",
       filter: {},
+      courses: [],
       sortDesc: false,
       sortBy: "name",
       keys: [
@@ -148,22 +201,13 @@ export default {
         "Neutros",
         "Discordam parcialmente",
         "Discordam"
-      ],
-      legacyItems: [
-        {
-          name: "Questão asdqwf dwqkjd dw wdqjwifw wjd dw.",
-          discordam: "14%",
-          "discordam parcialmente": "14%",
-          neutros: "14%",
-          "concordam parcialmente": "14%",
-          concordam: "14%"
-        }
       ]
     };
   },
 
   mounted() {
-    this.getDataFromApi();
+    this.getCoursesFromApi();
+    this.getResultsFromApi();
   },
 
   computed: {
@@ -192,14 +236,31 @@ export default {
   },
 
   methods: {
-    getDataFromApi() {
+    getResultsFromApi() {
       this.$store.commit("setLoading", true);
 
       this.$http
-        .post(`quizzes/${this.$route.params.id}/results`)
+        .post(`quizzes/${this.$route.params.id}/results`, {
+          filters: this.filters
+        })
         .then(response => {
           this.quiz = response.data.quiz;
           this.results = response.data.results;
+          this.$store.commit("setLoading", false);
+        })
+        .catch(() => {
+          this.$store.commit("setLoading", false);
+        });
+    },
+
+    getCoursesFromApi() {
+      this.$store.commit("setLoading", true);
+
+      this.$http
+        .get(`courses`)
+        .then(response => {
+          this.courses = response.data.courses;
+          this.filters.courses = response.data.courses.map(course => course.id);
           this.$store.commit("setLoading", false);
         })
         .catch(() => {
