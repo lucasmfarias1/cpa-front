@@ -8,11 +8,10 @@
         <v-text-field
           :rules="[rules.required, rules.min]"
           label="CPF"
+          v-mask="'###.###.###-##'"
           class="input-group--focused"
           prepend-icon="lock"
           v-model="cpf"
-          counter="11"
-          maxlength="11"
         ></v-text-field>
         <div class="text-right mt-2">
           <v-btn
@@ -36,7 +35,7 @@ export default {
       cpf: "",
       rules: {
         required: value => !!value || "Campo obrigatório",
-        min: v => v.length >= 11 || "Mínimo 11 caracteres"
+        min: v => v.length >= 14 || "Mínimo 14 caracteres"
       }
     };
   },
@@ -45,7 +44,7 @@ export default {
     login() {
       if (!this.valid) return;
       this.$store.commit("setLoading", true);
-      let cpf = this.cpf;
+      let cpf = this.cpf.replace(/\D/g,'');
       this.$store
         .dispatch("login", { cpf })
         .then(response => {

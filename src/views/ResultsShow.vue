@@ -50,19 +50,29 @@
                 <v-expansion-panel-content>
                   <v-row>
                     <v-col>
+                      <h4>Idade</h4>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <v-col>
                       <v-text-field
                         v-model="filters.min_age"
                         clearable
-                        label="Idade Mínima"
+                        label="Mínima"
                         type="number"
+                        min="0"
+                        max="999"
                       ></v-text-field>
                     </v-col>
                     <v-col>
                       <v-text-field
                         v-model="filters.max_age"
                         clearable
-                        label="Idade Máxima"
+                        label="Máxima"
                         type="number"
+                        min="0"
+                        max="999"
                       ></v-text-field>
                     </v-col>
                   </v-row>

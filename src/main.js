@@ -6,6 +6,9 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import moment from "moment";
 import "moment/locale/pt-br";
+import VueTheMask from 'vue-the-mask'
+
+Vue.use(VueTheMask)
 
 Vue.config.productionTip = false;
 

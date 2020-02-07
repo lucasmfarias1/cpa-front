@@ -1,59 +1,61 @@
 <template>
   <v-container class="fill-height">
-    <v-row align="center" justify="center">
-      <v-col align="center">
-        <v-card class="py-1">
-          <v-progress-circular
-            v-if="$store.getters.isLoading"
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-          <v-simple-table v-else>
-            <template v-slot:default>
-              <thead>
-                <tr v-if="availableQuizzes.length > 0">
-                  <th class="text-left">Questionário</th>
-                  <th class="text-left">Número de questões</th>
-                  <th class="text-left">Data limite</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody v-if="availableQuizzes.length > 0">
-                <tr v-for="quiz in availableQuizzes" :key="quiz.id">
-                  <td>{{ quiz.name }}</td>
-                  <td>{{ quiz.question_count }}</td>
-                  <td>
-                    {{
-                      moment(quiz.deadline)
-                        .endOf("day")
-                        .calendar()
-                    }}
-                  </td>
-                  <td>
-                    <v-btn
-                      @click="checkUserCanAnswer(quiz.id)"
-                      text
-                      class="primary"
-                    >
-                      Responder questionário
-                    </v-btn>
-                  </td>
-                </tr>
-              </tbody>
-              <tbody v-else>
-                <tr>
-                  <th colspan="3">
-                    <h3 class="title text-center">
-                      Nenhum questionário ativo no momento
-                    </h3>
-                  </th>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-container>
+      <v-row align="center" justify="center">
+        <v-col align="center">
+          <v-card class="py-1">
+            <v-progress-circular
+              v-if="$store.getters.isLoading"
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+            <v-simple-table v-else>
+              <template v-slot:default>
+                <thead>
+                  <tr v-if="availableQuizzes.length > 0">
+                    <th class="text-left">Questionário</th>
+                    <th class="text-left">Número de questões</th>
+                    <th class="text-left">Data limite</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody v-if="availableQuizzes.length > 0">
+                  <tr v-for="quiz in availableQuizzes" :key="quiz.id">
+                    <td>{{ quiz.name }}</td>
+                    <td>{{ quiz.question_count }}</td>
+                    <td>
+                      {{
+                        moment(quiz.deadline)
+                          .endOf("day")
+                          .calendar()
+                      }}
+                    </td>
+                    <td>
+                      <v-btn
+                        @click="checkUserCanAnswer(quiz.id)"
+                        text
+                        class="primary"
+                      >
+                        Responder questionário
+                      </v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody v-else>
+                  <tr>
+                    <th colspan="3">
+                      <h3 class="title text-center">
+                        Nenhum questionário ativo no momento
+                      </h3>
+                    </th>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 

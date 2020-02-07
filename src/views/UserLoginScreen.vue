@@ -1,8 +1,10 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <user-login></user-login>
-    </v-row>
+  <v-container class="fill-height">
+    <v-container>
+      <v-row align="center" justify="center">
+        <user-login></user-login>
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 

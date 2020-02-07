@@ -6,7 +6,8 @@
     <v-card-text>
       <v-form @submit.prevent="login" v-model="valid">
         <v-text-field
-          :rules="[rules.required, rules.min]"
+          :rules="[rules.required]"
+          v-mask="'###.###.###-##'"
           label="CPF"
           class="input-group--focused"
           prepend-icon="person"
@@ -52,7 +53,7 @@ export default {
     login() {
       this.$store.commit("setLoading", true);
 
-      let cpf = this.cpf;
+      let cpf = this.cpf.replace(/\D/g,'');
       let password = this.password;
       this.$store
         .dispatch("login", { cpf, password })
