@@ -44,7 +44,7 @@ export default {
     login() {
       if (!this.valid) return;
       this.$store.commit("setLoading", true);
-      let cpf = this.cpf.replace(/\D/g,'');
+      let cpf = this.cpf.replace(/\D/g, "");
       this.$store
         .dispatch("login", { cpf })
         .then(response => {

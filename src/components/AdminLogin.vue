@@ -20,6 +20,7 @@
           class="input-group--focused"
           prepend-icon="lock"
           v-model="password"
+          type="password"
         ></v-text-field>
         <div class="text-right mt-2">
           <v-btn
@@ -53,7 +54,7 @@ export default {
     login() {
       this.$store.commit("setLoading", true);
 
-      let cpf = this.cpf.replace(/\D/g,'');
+      let cpf = this.cpf.replace(/\D/g, "");
       let password = this.password;
       this.$store
         .dispatch("login", { cpf, password })
@@ -68,11 +69,13 @@ export default {
           this.$router.push("/quiz");
           this.$store.commit("setLoading", false);
         })
-        .catch(() => {
-          this.$store.commit("setSnackbar", {
-            text: "Credenciais incorretas. Por favor tente novamente.",
-            color: "error"
-          });
+        .catch(error => {
+          if (error.response.status == 401) {
+            this.$store.commit("setSnackbar", {
+              text: "Credenciais incorretas. Por favor tente novamente.",
+              color: "error"
+            });
+          }
           this.$store.commit("setLoading", false);
         });
     }

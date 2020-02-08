@@ -31,7 +31,8 @@ const routes = [
     name: "answer-card",
     component: AnswerCard,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      forbidsAdmin: true
     }
   },
   {
@@ -39,7 +40,8 @@ const routes = [
     name: "quiz",
     component: QuizIndex,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {
@@ -48,7 +50,8 @@ const routes = [
     component: QuizIndex,
     props: { archived: true },
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {
@@ -56,7 +59,8 @@ const routes = [
     name: "quiz-create",
     component: QuizCreate,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {
@@ -64,7 +68,8 @@ const routes = [
     name: "quiz-edit",
     component: QuizCreate,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {
@@ -72,7 +77,8 @@ const routes = [
     name: "quiz-result",
     component: ResultsShow,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {
@@ -88,7 +94,8 @@ const routes = [
     name: "meu-perfil",
     component: MyProfile,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      forbidsAdmin: true
     }
   }
 ];
@@ -99,16 +106,35 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn) {
-      next();
-      return;
-    }
-    next("/");
-  } else if (to.matched.some(record => record.meta.requiresGuest)) {
-    if (!store.getters.isLoggedIn) {
-      next();
-      return;
-    }
+    if (!store.getters.isLoggedIn) next("/");
+    else next();
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresGuest)) {
+    if (store.getters.isLoggedIn) next("/");
+    else next();
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    if (!store.getters.currentUser.is_admin) next("/");
+    else next();
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.forbidsAdmin)) {
+    if (store.getters.currentUser.is_admin) next("/");
+    else next();
   } else {
     next();
   }

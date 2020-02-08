@@ -22,7 +22,12 @@
 
         <v-divider dark class="my-2" />
 
-        <v-list-item link to="/admin-login">
+        <v-list-item
+          link
+          to="/admin-login"
+          v-if="!isLoggedIn || isAdmin"
+          :disabled="isLoggedIn"
+        >
           <v-list-item-action>
             <v-icon>mdi-shield-account</v-icon>
           </v-list-item-action>
@@ -31,7 +36,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/quiz">
+        <v-list-item v-if="isAdmin" link to="/quiz">
           <v-list-item-action>
             <v-icon>mdi-clipboard-text-multiple</v-icon>
           </v-list-item-action>
@@ -40,7 +45,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/quiz-archive">
+        <v-list-item v-if="isAdmin" link to="/quiz-archive">
           <v-list-item-action>
             <v-icon>mdi-file-cabinet</v-icon>
           </v-list-item-action>
@@ -53,7 +58,8 @@
       <template v-slot:append>
         <v-card v-if="$store.getters.isLoggedIn">
           <v-card-text>
-            <div>Aluno</div>
+            <div v-if="isAdmin">Administrador</div>
+            <div v-else>Aluno</div>
             <p class="title text--primary mb-0">
               {{ username }}
             </p>
@@ -65,7 +71,7 @@
             <v-btn text color="secondary" @click.prevent="logout">
               Sair
             </v-btn>
-            <v-btn text color="secondary" to="/meu-perfil">
+            <v-btn v-if="!isAdmin" text color="secondary" to="/meu-perfil">
               Meu Perfil
             </v-btn>
           </v-card-actions>
@@ -120,6 +126,14 @@ export default {
       return this.$store.getters.currentUser.course
         ? this.$store.getters.currentUser.course.shorthand
         : "";
+    },
+
+    isAdmin() {
+      return this.$store.getters.currentUser.is_admin;
+    },
+
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
     }
   },
 
