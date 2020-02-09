@@ -199,7 +199,7 @@ export default {
           })
           .catch(() => {
             this.$store.commit("setSnackbar", {
-              text: "Oops, algo de errado. Por favor tente novamente.",
+              text: "Oops, algo deu errado. Por favor tente novamente.",
               color: "error"
             });
             this.$store.commit("setLoading", false);
@@ -253,7 +253,7 @@ export default {
           })
           .catch(() => {
             this.$store.commit("setSnackbar", {
-              text: "Oops, algo de errado. Por favor tente novamente.",
+              text: "Oops, algo deu errado. Por favor tente novamente.",
               color: "error"
             });
             this.$store.commit("setLoading", false);
@@ -276,7 +276,7 @@ export default {
         })
         .catch(() => {
           this.$store.commit("setSnackbar", {
-            text: "Oops, algo de errado. Por favor tente novamente.",
+            text: "Oops, algo deu errado. Por favor tente novamente.",
             color: "error"
           });
           this.$store.commit("setLoading", false);

@@ -4,6 +4,8 @@ import store from "../store/index.js";
 import Home from "../views/Home.vue";
 import UserLoginScreen from "../views/UserLoginScreen.vue";
 import AdminLoginScreen from "../views/AdminLoginScreen.vue";
+import AdminIndex from "../views/AdminIndex.vue";
+import AdminCreate from "../views/AdminCreate.vue";
 import AnswerCard from "../views/AnswerCard.vue";
 import QuizIndex from "../views/QuizIndex.vue";
 import QuizCreate from "../views/QuizCreate.vue";
@@ -87,6 +89,33 @@ const routes = [
     component: AdminLoginScreen,
     meta: {
       requiresGuest: true
+    }
+  },
+  {
+    path: "/admins",
+    name: "admins",
+    component: AdminIndex,
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: "/admins/create",
+    name: "admins-create",
+    component: AdminCreate,
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: "/admins/edit/:id",
+    name: "admins-edit",
+    component: AdminCreate,
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
     }
   },
   {

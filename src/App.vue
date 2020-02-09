@@ -53,6 +53,15 @@
             <v-list-item-title>Questionários Arquivados</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item v-if="isAdmin" link to="/admins">
+          <v-list-item-action>
+            <v-icon>mdi-account-group</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Gerenciar Administradores</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
       <template v-slot:append>

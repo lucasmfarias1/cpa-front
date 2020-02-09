@@ -2,7 +2,9 @@
   <v-container m-0 id="createq" ref="container">
     <v-row justify="center" class="ma-5" ref="firstrow">
       <h2 class="title">
-        Novo Questionário
+        <span v-if="quiz.id">Editar</span>
+        <span v-else>Novo</span>
+        Questionário
       </h2>
     </v-row>
     <v-row>
