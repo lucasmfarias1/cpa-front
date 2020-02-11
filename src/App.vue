@@ -112,18 +112,6 @@
 
 <script>
 export default {
-  created: function() {
-    this.$http.interceptors.response.use(undefined, function(err) {
-      return new Promise(function() {
-        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-          delete this.$http.defaults.headers.common["Authorization"];
-          this.$store.dispatch("logout");
-        }
-        throw err;
-      });
-    });
-  },
-
   computed: {
     username() {
       return this.$store.getters.currentUser.name

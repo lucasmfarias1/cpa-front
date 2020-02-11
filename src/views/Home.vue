@@ -89,6 +89,11 @@ export default {
           color: "secondary"
         });
         this.$router.push("/user-login");
+      } else if (this.$store.getters.currentUser.is_admin) {
+        this.$store.commit("setSnackbar", {
+          text: `Administradores não podem responder questionários.`,
+          color: "error"
+        });
       } else {
         this.$store.commit("setLoading", true);
         this.$http

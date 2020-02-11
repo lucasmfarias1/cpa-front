@@ -143,6 +143,7 @@ export default {
             color: "success"
           });
           this.$store.dispatch("refreshCurrentUser");
+          this.$router.push("/");
           this.$store.commit("setLoading", false);
         });
       this.$store.commit("setLoading", false);

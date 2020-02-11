@@ -47,6 +47,7 @@
                 class="ma-4"
                 label="Senha"
                 v-model="admin.password"
+                type="password"
               >
               </v-text-field>
             </v-row>
@@ -57,6 +58,7 @@
                 class="ma-4"
                 label="Confirme a senha"
                 v-model="admin.password_confirmation"
+                type="password"
               >
               </v-text-field>
             </v-row>
@@ -109,7 +111,7 @@ export default {
         minCpf: v => (v && v.length) >= 14 || "Mínimo 14 caracteres",
         minPassword: v => (v && v.length) >= 4 || "Mínimo 4 caracteres"
       },
-      admin: { cpf: "00000000000" }
+      admin: { cpf: "00000000000", course_id: 1 }
     };
   },
 
@@ -196,8 +198,11 @@ export default {
       this.$store.commit("setLoading", true);
 
       let cpf = this.admin.cpf.replace(/\D/g, "");
+      let admin = { ...this.admin, cpf: cpf };
+      if (!admin.password) delete admin.password;
+
       this.$http
-        .patch(`admins/${this.admin.id}`, { ...this.admin, cpf: cpf })
+        .patch(`admins/${this.admin.id}`, admin)
         .then(response => {
           this.$store.commit("setSnackbar", {
             text: `Administrador #${response.data.admin.id} atualizado com sucesso`,

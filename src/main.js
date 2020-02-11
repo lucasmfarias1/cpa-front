@@ -6,9 +6,9 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import moment from "moment";
 import "moment/locale/pt-br";
-import VueTheMask from 'vue-the-mask'
+import VueTheMask from "vue-the-mask";
 
-Vue.use(VueTheMask)
+Vue.use(VueTheMask);
 
 Vue.config.productionTip = false;
 
@@ -19,6 +19,19 @@ const base = axios.create({
   baseURL: "http://cpa.test/api/v1"
 });
 Vue.prototype.$http = base;
+
+Vue.prototype.$http.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (error.response.status == 401) {
+      store.dispatch("logout");
+      router.push("/");
+    }
+    return Promise.reject(error);
+  }
+);
 
 const token = localStorage.getItem("token");
 if (token) {

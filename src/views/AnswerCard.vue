@@ -97,7 +97,7 @@ export default {
         .post(`quizzes/${this.quiz.id}/answers`, answerCard)
         .then(() => {
           this.$store.commit("setSnackbar", {
-            text: `Questionário respondido com sucesso.`,
+            text: `Questionário respondido com sucesso. Muito obrigado pela sua colaboração!`,
             color: "success"
           });
           this.$router.push("/");
