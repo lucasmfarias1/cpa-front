@@ -41,7 +41,7 @@
             <v-icon>mdi-clipboard-text-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Criar Questionários</v-list-item-title>
+            <v-list-item-title>Gerenciar Questionários</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -54,7 +54,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="isAdmin" link to="/admins">
+        <v-list-item v-if="isAdmin && isMaster" link to="/admins">
           <v-list-item-action>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-action>
@@ -127,6 +127,10 @@ export default {
 
     isAdmin() {
       return this.$store.getters.currentUser.is_admin;
+    },
+
+    isMaster() {
+      return this.$store.getters.currentUser.is_master;
     },
 
     isLoggedIn() {

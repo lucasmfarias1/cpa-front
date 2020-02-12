@@ -29,7 +29,13 @@
     </template>
 
     <template v-slot:item.action="{ item }">
-      <v-btn title="Deletar admin" class="mx-1" icon @click="deleteAdmin(item)">
+      <v-btn
+        title="Deletar admin"
+        class="mx-1"
+        icon
+        @click="deleteAdmin(item)"
+        v-if="!item.is_master"
+      >
         <v-icon>delete</v-icon>
       </v-btn>
 
