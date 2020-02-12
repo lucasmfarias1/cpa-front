@@ -14,6 +14,7 @@
                 <thead>
                   <tr v-if="availableQuizzes.length > 0">
                     <th class="text-left">Questionário</th>
+                    <th class="text-left">Curso</th>
                     <th class="text-left">Número de questões</th>
                     <th class="text-left">Data limite</th>
                     <th></th>
@@ -22,6 +23,7 @@
                 <tbody v-if="availableQuizzes.length > 0">
                   <tr v-for="quiz in availableQuizzes" :key="quiz.id">
                     <td>{{ quiz.name }}</td>
+                    <td>{{ quiz.course_name }}</td>
                     <td>{{ quiz.question_count }}</td>
                     <td>
                       {{

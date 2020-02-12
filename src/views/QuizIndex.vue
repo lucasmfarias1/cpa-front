@@ -50,7 +50,7 @@
         class="mx-1"
         icon
         @click="deleteQuiz(item)"
-        v-if="item.status == 0"
+        v-if="item.status == 0 && userCanEdit(item)"
       >
         <v-icon>delete</v-icon>
       </v-btn>
@@ -59,7 +59,7 @@
         title="Editar questionário"
         class="mx-1"
         icon
-        v-if="item.status == 0"
+        v-if="item.status == 0 && userCanEdit(item)"
         :to="'/quiz/edit/' + item.id"
       >
         <v-icon>edit</v-icon>
@@ -70,7 +70,7 @@
         class="mx-1"
         icon
         @click.prevent="openModal(item)"
-        v-if="item.status == 0"
+        v-if="item.status == 0 && userCanEdit(item)"
       >
         <v-icon>send</v-icon>
       </v-btn>
@@ -80,7 +80,7 @@
         class="mx-1"
         icon
         @click.prevent="finishQuiz(item)"
-        v-if="item.status == 1"
+        v-if="item.status == 1 && userCanEdit(item)"
       >
         <v-icon>mdi-flag-checkered</v-icon>
       </v-btn>
@@ -90,7 +90,7 @@
         class="mx-1"
         icon
         @click.prevent="archiveQuiz(item)"
-        v-if="item.status == 2 || item.status == 3"
+        v-if="(item.status == 2 || item.status == 3) && userCanEdit(item)"
       >
         <v-icon>mdi-file-cabinet</v-icon>
       </v-btn>
@@ -143,6 +143,10 @@ export default {
           value: "name"
         },
         {
+          text: "Curso",
+          value: "course_name"
+        },
+        {
           text: "Status",
           value: "status"
         },
@@ -166,6 +170,10 @@ export default {
   computed: {
     loading() {
       return this.$store.getters.isLoading;
+    },
+
+    currentUser() {
+      return this.$store.getters.currentUser;
     }
   },
 
@@ -281,6 +289,13 @@ export default {
           });
           this.$store.commit("setLoading", false);
         });
+    },
+
+    userCanEdit(quiz) {
+      return (
+        this.currentUser.is_master ||
+        this.currentUser.course.id == quiz.course_id
+      );
     }
   }
 };

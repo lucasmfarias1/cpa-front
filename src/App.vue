@@ -67,7 +67,9 @@
       <template v-slot:append>
         <v-card v-if="$store.getters.isLoggedIn">
           <v-card-text>
-            <div v-if="isAdmin">Administrador</div>
+            <div v-if="isAdmin">
+              Administrador <span v-if="isMaster">Master</span>
+            </div>
             <div v-else>Aluno</div>
             <p class="title text--primary mb-0">
               {{ username }}

@@ -12,6 +12,19 @@
         <v-form ref="form" id="createform" v-model="valid">
           <div ref="colq">
             <v-row class="d-flex align-center">
+              <v-col>
+                <v-select
+                  :items="courses"
+                  :readonly="!currentUser.is_master"
+                  label="Curso"
+                  v-model="quiz.course_id"
+                  item-text="shorthand"
+                  item-value="id"
+                >
+                </v-select>
+              </v-col>
+            </v-row>
+            <v-row class="d-flex align-center">
               <v-text-field
                 :rules="[rules.required]"
                 :disabled="loading"
@@ -100,18 +113,31 @@ export default {
       },
       quiz: {
         name: "",
-        questions: [{ body: "" }]
-      }
+        questions: [{ body: "" }],
+        course_id: 0
+      },
+      courses: []
     };
   },
 
   computed: {
     loading() {
       return this.$store.getters.isLoading;
+    },
+
+    currentUser() {
+      return this.$store.getters.currentUser;
     }
   },
 
   mounted() {
+    if (this.currentUser.is_master) {
+      this.getCoursesFromApi();
+    } else {
+      this.courses = [this.currentUser.course];
+      this.quiz.course_id = this.currentUser.course.id;
+    }
+
     if (this.$route.params.id) {
       this.getQuizFromApi();
     }
@@ -178,8 +204,12 @@ export default {
 
     storeQuiz() {
       this.$store.commit("setLoading", true);
+
+      let quiz = { ...this.quiz };
+      if (quiz.course_id == 0) delete quiz.course_id;
+
       this.$http
-        .post("quizzes", this.quiz)
+        .post("quizzes", quiz)
         .then(response => {
           this.quiz.id = response.data.quiz.id;
           this.$store.commit("setSnackbar", {
@@ -207,8 +237,12 @@ export default {
 
     updateQuiz() {
       this.$store.commit("setLoading", true);
+
+      let quiz = { ...this.quiz };
+      if (quiz.course_id == 0) delete quiz.course_id;
+
       this.$http
-        .patch(`quizzes/${this.quiz.id}`, this.quiz)
+        .patch(`quizzes/${this.quiz.id}`, quiz)
         .then(response => {
           this.$store.commit("setSnackbar", {
             text: `Questionário #${response.data.quiz.id} atualizado com sucesso`,
@@ -238,6 +272,23 @@ export default {
         .get(`quizzes/${this.$route.params.id}`)
         .then(response => {
           this.quiz = response.data.quiz;
+          this.$store.commit("setLoading", false);
+        })
+        .catch(() => {
+          this.$store.commit("setLoading", false);
+        });
+    },
+
+    getCoursesFromApi() {
+      this.$store.commit("setLoading", true);
+
+      this.$http
+        .get(`courses`)
+        .then(response => {
+          this.courses = [
+            ...response.data.courses,
+            { id: 0, shorthand: "TODOS" }
+          ];
           this.$store.commit("setLoading", false);
         })
         .catch(() => {
