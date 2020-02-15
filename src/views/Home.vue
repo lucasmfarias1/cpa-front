@@ -37,6 +37,7 @@
                         @click="checkUserCanAnswer(quiz.id)"
                         text
                         class="primary"
+                        :disabled="notYourCourse(quiz)"
                       >
                         Responder questionário
                       </v-btn>
@@ -76,6 +77,10 @@ export default {
   computed: {
     availableQuizzes() {
       return this.quizzes.filter(quiz => quiz.is_available);
+    },
+
+    currentUser() {
+      return this.$store.getters.currentUser;
     }
   },
 
@@ -120,6 +125,13 @@ export default {
         this.quizzes = response.data.quizzes;
         this.$store.commit("setLoading", false);
       });
+    },
+
+    notYourCourse(quiz) {
+      return (
+        quiz.course_name != "TODOS" &&
+        quiz.course_id != this.currentUser.course.id
+      );
     }
   }
 };

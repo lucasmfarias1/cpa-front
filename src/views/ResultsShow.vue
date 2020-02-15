@@ -233,13 +233,19 @@ export default {
       return this.results.map(item => {
         return {
           name: item.questionBody,
-          discordam: `${item.questionResults.disagree * 100}%`,
-          "discordam parcialmente": `${item.questionResults.disagree_partial *
-            100}%`,
-          neutros: `${item.questionResults.neutral * 100}%`,
-          "concordam parcialmente": `${item.questionResults.agree_partial *
-            100}%`,
-          concordam: `${item.questionResults.agree * 100}%`
+          discordam: `${item.questionResults.disagree.percent * 100}% (${
+            item.questionResults.disagree.count
+          })`,
+          "discordam parcialmente": `${item.questionResults.disagree_partial
+            .percent * 100}% (${item.questionResults.disagree_partial.count})`,
+          neutros: `${item.questionResults.neutral.percent * 100}% (${
+            item.questionResults.neutral.count
+          })`,
+          "concordam parcialmente": `${item.questionResults.agree_partial
+            .percent * 100}% (${item.questionResults.agree_partial.count})`,
+          concordam: `${item.questionResults.agree.percent * 100}% (${
+            item.questionResults.agree.count
+          })`
         };
       });
     }
