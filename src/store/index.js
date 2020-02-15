@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import axios from "axios";
 
 Vue.use(Vuex);
+axios.defaults.baseURL = process.env.VUE_APP_BASEURL;
 
 export default new Vuex.Store({
   state: {
@@ -67,7 +68,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit("auth_request");
         axios({
-          url: "http://cpa.test/api/v1/auth/login",
+          url: "auth/login",
           data: user,
           method: "POST"
         })
@@ -93,7 +94,7 @@ export default new Vuex.Store({
     logout({ commit }) {
       return new Promise(resolve => {
         axios({
-          url: "http://cpa.test/api/v1/auth/logout",
+          url: "auth/logout",
           method: "POST"
         });
         commit("logout");
@@ -107,7 +108,7 @@ export default new Vuex.Store({
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       return new Promise((resolve, reject) => {
         axios({
-          url: "http://cpa.test/api/v1/auth/me",
+          url: "auth/me",
           method: "POST"
         })
           .then(response => {
@@ -123,7 +124,7 @@ export default new Vuex.Store({
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       return new Promise((resolve, reject) => {
         axios({
-          url: "http://cpa.test/api/v1/auth/me",
+          url: "auth/me",
           method: "POST"
         })
           .then(response => {

@@ -16,7 +16,8 @@ moment.locale("pt-BR");
 Vue.prototype.moment = moment;
 
 const base = axios.create({
-  baseURL: "http://cpa.test/api/v1"
+  baseURL: process.env.VUE_APP_BASEURL
+  // baseURL: "http://cpa.test/api/v1"
 });
 Vue.prototype.$http = base;
 
