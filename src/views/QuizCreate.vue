@@ -148,6 +148,10 @@ export default {
     });
   },
 
+  destroyed() {
+    window.removeEventListener("resize", this.setFooterWidth);
+  },
+
   methods: {
     addQuestion(event) {
       event.preventDefault();
@@ -271,7 +275,11 @@ export default {
       this.$http
         .get(`quizzes/${this.$route.params.id}`)
         .then(response => {
-          this.quiz = response.data.quiz;
+          const course_id =
+            response.data.quiz.course_id == null
+              ? 0
+              : response.data.quiz.course_id;
+          this.quiz = { ...response.data.quiz, course_id: course_id };
           this.$store.commit("setLoading", false);
         })
         .catch(() => {
