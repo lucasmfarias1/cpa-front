@@ -96,7 +96,7 @@ export default {
           color: "secondary"
         });
         this.$router.push("/user-login");
-      } else if (this.$store.getters.currentUser.is_admin) {
+      } else if (this.$store.getters.currentUser.is_admin == 1) {
         this.$store.commit("setSnackbar", {
           text: `Administradores não podem responder questionários.`,
           color: "error"

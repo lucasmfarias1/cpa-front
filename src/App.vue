@@ -92,7 +92,7 @@
 
     <v-app-bar app color="indigo" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>Questionários CPA Fatec-RL</v-toolbar-title>
+      <v-toolbar-title>Questionar -  Fatec-RL</v-toolbar-title>
     </v-app-bar>
 
     <v-content id="content" class="white d-flex justify-center">
@@ -128,7 +128,7 @@ export default {
     },
 
     isAdmin() {
-      return this.$store.getters.currentUser.is_admin;
+      return this.$store.getters.currentUser.is_admin == 1;
     },
 
     isMaster() {

@@ -153,7 +153,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAdmin)) {
-    if (!store.getters.currentUser.is_admin) next("/");
+    if (!store.getters.currentUser.is_admin == 1) next("/");
     else next();
   } else {
     next();
@@ -162,7 +162,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.forbidsAdmin)) {
-    if (store.getters.currentUser.is_admin) next("/");
+    if (store.getters.currentUser.is_admin == 1) next("/");
     else next();
   } else {
     next();
